@@ -1,0 +1,14 @@
+[project]
+    authors = [
+        { name = "Snaptraks", email = "snaptraks@gmail.com" },
+    ]
+    dependencies = [  ]
+    description = "API wrapper around the Seerr API"
+    name = "seerrapi"
+    readme = "README.md"
+    requires-python = ">=3.11"
+    version = "2026.02.1"
+
+[build-system]
+    build-backend = "uv_build"
+    requires      = [ "uv_build>=0.10.6,<0.11.0" ]

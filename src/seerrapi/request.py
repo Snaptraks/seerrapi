@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from datetime import datetime
 from enum import IntEnum, StrEnum
 from typing import TYPE_CHECKING, Literal, TypedDict, Unpack
 
-from apischema import deserialize
+from pydantic import Field
 
-from . import Base
+from . import Base, Stateful
 from .http import APIPath
 from .users import User
 
@@ -56,8 +55,7 @@ class MediaStatus(IntEnum):
     DELETED = 6
 
 
-@dataclass
-class MediaInfo:
+class MediaInfo(Base):
     download_status: list[str]
     download_status_4k: list[str]
     id: int
@@ -81,9 +79,9 @@ class MediaInfo:
     rating_key_4k: str | None
     jellyfin_media_id: int | None
     jellyfin_media_id_4k: int | None
-    requests: list[Request] = field(default_factory=list)
+    requests: list[Request] = Field(default_factory=list)
     service_url: str | None = None
-    seasons: list[int] | Literal["all"] = field(default_factory=list)
+    seasons: list[int] | Literal["all"] = Field(default_factory=list)
 
 
 # Request objects
@@ -96,16 +94,14 @@ class RequestStatus(IntEnum):
     FAILED = 4
 
 
-@dataclass
-class PageInfo:
+class PageInfo(Base):
     pages: int
     page_size: int
     results: int
     page: int
 
 
-@dataclass
-class Season:
+class Season(Base):
     id: int
     season_number: int
     status: RequestStatus
@@ -113,8 +109,7 @@ class Season:
     updated_at: datetime
 
 
-@dataclass
-class Request(Base):
+class Request(Stateful):
     id: int
     status: RequestStatus
     created_at: datetime
@@ -145,16 +140,14 @@ class Request(Base):
             "tags": self.tags,
         }
 
-        request = deserialize(
-            Request,
+        return Request.from_data(
             await self.http.request(
                 "PUT",
                 APIPath("/request/{request_id}", request_id=self.id),
                 payload=self_payload | payload,  # pyright: ignore[reportArgumentType]
             ),
+            http=self.http,
         )
-        request.http = self.http
-        return request
 
     async def delete(self) -> None:
         await self.http.request(
@@ -162,30 +155,25 @@ class Request(Base):
         )
 
     async def retry(self) -> Request:
-        request = deserialize(
-            Request,
+        return Request.from_data(
             await self.http.request(
                 "POST", APIPath("/request/{request_id}/retry", request_id=self.id)
             ),
+            http=self.http,
         )
-        request.http = self.http
-        return request
 
     async def update_status(self, status: Literal["approve", "decline"]) -> Request:
-        request = deserialize(
-            Request,
+        return Request.from_data(
             await self.http.request(
                 "POST",
                 APIPath(
                     "/request/{request_id}/{status}", request_id=self.id, status=status
                 ),
             ),
+            http=self.http,
         )
-        request.http = self.http
-        return request
 
 
-@dataclass
 class RequestCount(Base):
     total: int
     movie: int

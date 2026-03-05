@@ -1,5 +1,4 @@
 import pytest
-from rich import print
 
 from seerrapi.request import Request, RequestStatus
 

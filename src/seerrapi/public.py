@@ -1,9 +1,6 @@
-from dataclasses import dataclass
-
 from . import Base
 
 
-@dataclass
 class Status(Base):
     version: str
     commit_tag: str
@@ -12,7 +9,6 @@ class Status(Base):
     restart_required: bool
 
 
-@dataclass
 class AppData(Base):
     app_data: bool
     app_data_path: str

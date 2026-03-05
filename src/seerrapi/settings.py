@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Self, TypedDict, Unpack
 
-from apischema import alias, deserialize
+from pydantic import Field
 
-from . import Base
+from . import Base, Stateful
 from .http import APIPath
 
 if TYPE_CHECKING:
@@ -41,21 +40,17 @@ if TYPE_CHECKING:
         api_request_timeout: int
 
 
-@alias(lambda s: f"quota{s.title()}")
-@dataclass
-class Quota:
-    limit: int | None = None
-    days: int | None = None
+class Quota(Base):
+    limit: int | None = Field(default=None, alias="quotaLimit")
+    days: int | None = Field(default=None, alias="quotaDays")
 
 
-@dataclass
-class DefaultQuotas:
-    movie: Quota = field(default_factory=Quota)
-    tv: Quota = field(default_factory=Quota)
+class DefaultQuotas(Base):
+    movie: Quota = Field(default_factory=Quota)
+    tv: Quota = Field(default_factory=Quota)
 
 
-@dataclass
-class MainSettings(Base):
+class MainSettings(Stateful):
     api_key: str
     application_title: str
     application_url: str
@@ -78,23 +73,20 @@ class MainSettings(Base):
     locale: str
     youtube_url: str
 
-    async def update(self, **payload: Unpack[MainSettingsDict]) -> Self:
-        for k, v in payload.items():
-            self.__setattr__(k, v)
-        path = APIPath("/settings/main")
-        await self.http.request("POST", path, payload=payload)  # pyright: ignore[reportArgumentType]
-
-        return self
+    async def update(self, **payload: Unpack[MainSettingsDict]) -> MainSettings:
+        return MainSettings.from_data(
+            await self.http.request("POST", APIPath("/settings/main"), payload=payload),  # pyright: ignore[reportArgumentType]
+            http=self.http,
+        )
 
     async def regenerate(self) -> MainSettings:
         path = APIPath("/settings/main/regenerate")
         resp = await self.http.request("POST", path)
 
-        return deserialize(MainSettings, await resp.json())
+        return MainSettings.from_data(resp, http=self.http)
 
 
-@dataclass
-class Proxy:
+class Proxy(Base):
     enabled: bool
     hostname: str
     port: int
@@ -105,15 +97,13 @@ class Proxy:
     bypass_local_addresses: bool
 
 
-@dataclass
-class DNSCache:
+class DNSCache(Base):
     enabled: bool
     force_min_ttl: int
     force_max_ttl: int
 
 
-@dataclass
-class NetworkSettings(Base):
+class NetworkSettings(Stateful):
     csrf_protection: bool
     force_ipv4_first: bool
     trust_proxy: bool
@@ -121,10 +111,8 @@ class NetworkSettings(Base):
     dns_cache: DNSCache
     api_request_timeout: int
 
-    async def update(self, **parameters: Unpack[NetworkSettingsDict]) -> Self:
-        for k, v in parameters.items():
-            self.__setattr__(k, v)
-        path = APIPath("/settings/network")
-        await self.http.request("POST", path, payload=parameters)  # pyright: ignore[reportArgumentType]
-
-        return self
+    async def update(self, **payload: Unpack[NetworkSettingsDict]) -> NetworkSettings:
+        return NetworkSettings.from_data(
+            await self.http.request("POST", APIPath("/settings/main"), payload=payload),  # pyright: ignore[reportArgumentType]
+            http=self.http,
+        )

@@ -1,12 +1,12 @@
 import pytest
-from apischema import deserialize
 
 from seerrapi.settings import DefaultQuotas, MainSettings, Quota
 
 
 def test_quota() -> None:
     limit, days = 0, 7
-    quota = deserialize(Quota, {"quotaLimit": limit, "quotaDays": days})
+    quota = Quota.model_validate({"quotaLimit": limit, "quotaDays": days})
+
     assert quota.limit == limit
     assert quota.days == days
 
@@ -17,7 +17,7 @@ def test_default_quotas() -> None:
         "tv": {"quotaLimit": 3},
     }
 
-    quotas = deserialize(DefaultQuotas, data)
+    quotas = DefaultQuotas.model_validate(data)
 
     assert quotas.movie.limit == data["movie"]["quotaLimit"]
     assert quotas.movie.days == data["movie"]["quotaDays"]

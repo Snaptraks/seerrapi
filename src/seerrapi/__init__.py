@@ -1,30 +1,181 @@
-from dataclasses import dataclass, field
+from datetime import datetime
+from enum import IntEnum, StrEnum
 from typing import Any, Self
 
-from apischema import deserialize, metadata, settings
+from pydantic import AliasGenerator, BaseModel, ConfigDict, Field
 
 from .http import HTTP
+from .utils import to_camel_case
 
-# Set aliases to convert the camelCase from API
-# responses to snake_case in Python style
-settings.camel_case = True
+_model_config = ConfigDict(
+    alias_generator=AliasGenerator(
+        validation_alias=to_camel_case,
+        serialization_alias=to_camel_case,
+    )
+)
 
 
-@dataclass
-class Base:
-    http: HTTP = field(init=False, metadata=metadata.skip(serialization=True))
+class Base(BaseModel):
+    model_config = _model_config
+
+    @classmethod
+    def from_data(cls, data: dict[str, Any]) -> Self:
+        return cls.model_validate(data, by_alias=True)
+
+    @classmethod
+    def from_data_list(cls, data: list[dict[str, Any]]) -> list[Self]:
+        return [cls.model_validate(d, by_alias=True) for d in data]
+
+
+class Stateful(BaseModel):
+    model_config = _model_config
+
+    @property
+    def http(self) -> HTTP:
+        return self._http
+
+    @http.setter
+    def http(self, value: HTTP) -> None:
+        self._http = value
 
     @classmethod
     def from_data(cls, data: dict[str, Any], *, http: HTTP) -> Self:
-        obj = deserialize(cls, data)
+        obj = cls.model_validate(data, by_alias=True)
         obj.http = http
 
         return obj
 
     @classmethod
     def from_data_list(cls, data: list[dict[str, Any]], *, http: HTTP) -> list[Self]:
-        objs = deserialize(list[cls], data)
+        objs = [cls.model_validate(d, by_alias=True) for d in data]
         for obj in objs:
             obj.http = http
 
         return objs
+
+
+class Genre(Base):
+    id: int
+    name: str
+
+
+class Keyword(Base):
+    id: int
+    name: str
+
+
+class VideoType(StrEnum):
+    CLIP = "Clip"
+    TEASER = "Teaser"
+    TRAILER = "Trailer"
+    FEATURETTE = "Featurette"
+    OPENING_CREDITS = "Opening Credits"
+    BEHIND_THE_SCENES = "Behind the Scenes"
+    BLOOPERS = "Bloopers"
+
+
+class RelatedVideo(Base):
+    site: str
+    key: str
+    name: str
+    size: int
+    type: VideoType
+    url: str
+
+
+class ProductionCompany(Base):
+    id: int
+    logo_path: str
+    origin_country: str
+    name: str
+
+
+class ProductionCountry(Base):
+    name: str
+    iso_3166_1: str = Field(alias="iso_3166_1")
+
+
+class ReleaseDate(Base):
+    certification: str
+    note: str
+    type: int
+    descriptors: list[str]
+    iso_639_1: str = Field(alias="iso_639_1")
+    release_date: datetime = Field(alias="release_date")
+
+
+class Release(Base):
+    iso_3166_1: str = Field(alias="iso_3166_1")
+    release_dates: list[ReleaseDate] = Field(alias="release_dates")
+    rating: str | None = None
+
+
+class SpokenLanguage(Base):
+    name: str
+    english_name: str = Field(alias="english_name")
+    iso_639_1: str = Field(alias="iso_639_1")
+
+
+class Gender(IntEnum):
+    NOT_SPECIFIED = 0
+    FEMALE = 1
+    MALE = 2
+    NON_BINARY = 3
+
+
+class Cast(Base):
+    id: int
+    cast_id: int
+    character: str
+    credit_id: str
+    gender: Gender
+    name: str
+    order: int
+    profile_path: str | None = None
+
+
+class Crew(Base):
+    id: int
+    credit_id: str
+    gender: Gender
+    name: str
+    job: str
+    department: str
+    profile_path: str | None = None
+
+
+class Credits(Base):
+    cast: list[Cast]
+    crew: list[Crew]
+
+
+class Collection(Base):
+    id: int
+    name: str
+    poster_path: str
+    backdrop_path: str
+
+
+class ExternalIds(Base):
+    facebook: str | None = Field(default=None)
+    freebase: str | None = Field(default=None)
+    freebase_m: str | None = Field(default=None)
+    imdb: str | None = Field(default=None)
+    instagram: str | None = Field(default=None)
+    tvdb: str | None = Field(default=None)
+    tvrage: str | None = Field(default=None)
+    twitter: str | None = Field(default=None)
+
+
+class WatchProviderDetails(Base):
+    display_priority: int
+    logo_path: str
+    id: int
+    name: str
+
+
+class WatchProvider(Base):
+    link: str
+    buy: list[WatchProviderDetails]
+    flatrate: list[WatchProviderDetails]
+    iso_3166_1: str = Field(alias="iso_3166_1")

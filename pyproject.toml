@@ -3,8 +3,8 @@
         { name = "Snaptraks", email = "snaptraks@gmail.com" },
     ]
     dependencies = [
-        "apischema>=0.19.0",
         "httpx>=0.28.1",
+        "pydantic>=2.12.5",
     ]
     description = "API wrapper around the Seerr API"
     name = "seerrapi"
@@ -32,7 +32,11 @@
     ]
 
 [tool.ruff.lint.flake8-type-checking]
-    runtime-evaluated-base-classes = [ "seerrapi.Base" ]
+    runtime-evaluated-base-classes = [
+        "pydantic.BaseModel",
+        "seerrapi.Base",
+        "seerrapi.Stateful",
+    ]
 
 [tool.ruff.lint.per-file-ignores]
     # Ignore rules in the "tests" directory
@@ -44,5 +48,6 @@
 
     # Ignore rules in the "src" directory
     "src/*" = [
+        "RUF009", # function-call-in-dataclass-default-argument (because of pydantic
         "SLF001", # private-member-access
     ]

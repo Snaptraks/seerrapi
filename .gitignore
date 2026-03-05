@@ -8,3 +8,8 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Env files
+.env
+tests/config.py
+compose.yml

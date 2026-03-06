@@ -2,7 +2,7 @@ from datetime import datetime
 from enum import IntEnum, StrEnum
 from typing import Any, Self
 
-from pydantic import AliasGenerator, BaseModel, ConfigDict, Field
+from pydantic import AliasChoices, AliasGenerator, BaseModel, ConfigDict, Field
 
 from .http import HTTP
 from .utils import to_camel_case
@@ -112,7 +112,9 @@ class Release(Base):
 
 class SpokenLanguage(Base):
     name: str
-    english_name: str = Field(alias="english_name")
+    english_name: str = Field(
+        validation_alias=AliasChoices("english_name", "englishName")
+    )
     iso_639_1: str = Field(alias="iso_639_1")
 
 
@@ -125,7 +127,7 @@ class Gender(IntEnum):
 
 class Cast(Base):
     id: int
-    cast_id: int
+    cast_id: int | None = None
     character: str
     credit_id: str
     gender: Gender
@@ -207,3 +209,12 @@ class RottenTomatoesRatings(Ratings):
 
 class IMDBRatings(Ratings):
     critics_score_count: int
+
+
+class Creator(Base):
+    id: int
+    credit_id: str = Field(alias="credit_id")
+    name: str
+    original_name: str = Field(alias="original_name")
+    gender: int
+    profile_path: str | None = Field(default=None, alias="profile_path")

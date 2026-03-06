@@ -4,6 +4,7 @@ from typing import Literal
 import pytest
 
 from seerrapi.client import SeerrClient
+from seerrapi.movies import Movie
 from seerrapi.public import AppData, Status
 from seerrapi.request import MediaType, Request, RequestCount
 from seerrapi.settings import MainSettings, NetworkSettings
@@ -79,3 +80,12 @@ async def test_client_get_requests_count(seerr_client: SeerrClient) -> None:
 async def test_client_get_request_by_id(seerr_client: SeerrClient) -> None:
     request = await seerr_client.get_request(1)
     assert isinstance(request, Request)
+
+
+# Movies methods
+
+
+@pytest.mark.asyncio
+async def test_client_get_movie(seerr_client: SeerrClient) -> None:
+    movie = await seerr_client.get_movie(105)
+    assert isinstance(movie, Movie)

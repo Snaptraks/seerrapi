@@ -179,3 +179,31 @@ class WatchProvider(Base):
     buy: list[WatchProviderDetails]
     flatrate: list[WatchProviderDetails]
     iso_3166_1: str = Field(alias="iso_3166_1")
+
+
+class AudienceRating(StrEnum):
+    SPILLED = "Spilled"
+    UPRIGHT = "Upright"
+
+
+class CriticsRating(StrEnum):
+    ROTTEN = "Rotten"
+    FRESH = "Fresh"
+    CERTIFIED_FRESH = "Certified Fresh"
+
+
+class Ratings(Base):
+    title: str
+    url: str
+    critics_score: float
+
+
+class RottenTomatoesRatings(Ratings):
+    year: int
+    audience_score: int
+    audience_rating: AudienceRating
+    critics_rating: CriticsRating
+
+
+class IMDBRatings(Ratings):
+    critics_score_count: int

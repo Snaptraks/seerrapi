@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Literal, Protocol, TypedDict, Unpack
 
 from .http import HTTP, APIPath
+from .movies import Movie
 from .public import AppData, Status
 from .request import (
     MediaType,
@@ -43,13 +44,11 @@ class SeerrClient:
     # Public endpoints
 
     async def get_status(self) -> Status:
-        return Status.from_data(
-            await self.http.request("GET", APIPath("/status")), http=self.http
-        )
+        return Status.from_data(await self.http.request("GET", APIPath("/status")))
 
     async def get_app_data(self) -> AppData:
         return AppData.from_data(
-            await self.http.request("GET", APIPath("/status/appdata")), http=self.http
+            await self.http.request("GET", APIPath("/status/appdata"))
         )
 
     # Settings endpoints
@@ -86,13 +85,25 @@ class SeerrClient:
 
     async def get_requests_count(self) -> RequestCount:
         return RequestCount.from_data(
-            await self.http.request("GET", APIPath("/request/count")), http=self.http
+            await self.http.request("GET", APIPath("/request/count"))
         )
 
     async def get_request(self, request_id: int) -> Request:
         return Request.from_data(
             await self.http.request(
                 "GET", APIPath(f"/request/{request_id}", request_id=request_id)
+            ),
+            http=self.http,
+        )
+
+    # Movies endpoints
+
+    async def get_movie(self, movie_id: int, *, language: str = "en") -> Movie:
+        return Movie.from_data(
+            await self.http.request(
+                "GET",
+                APIPath("/movie/{movie_id}", movie_id=movie_id),
+                params={"language": language},
             ),
             http=self.http,
         )

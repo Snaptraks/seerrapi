@@ -5,7 +5,7 @@ from datetime import date
 from pydantic import AliasPath, Field
 
 from . import (
-    Collection,
+    Base,
     Credits,
     ExternalIds,
     Genre,
@@ -24,10 +24,23 @@ from .http import APIPath
 from .request import MediaInfo, MediaType
 
 
+class PartialCollection(Base):
+    id: int
+    name: str
+    poster_path: str
+    backdrop_path: str
+
+
+class Collection(PartialCollection):
+    overview: str
+    parts: list[CollectionMovie]
+
+
 class _MovieBase(Stateful):
     id: int
     adult: bool
     backdrop_path: str | None
+    media_info: MediaInfo | None = None
     original_language: str
     original_title: str
     overview: str
@@ -40,6 +53,11 @@ class _MovieBase(Stateful):
     vote_count: int
 
 
+class CollectionMovie(_MovieBase):
+    genre_ids: list[int]
+    media_type: MediaType
+
+
 class MovieRecommendation(_MovieBase):
     genre_ids: list[int]
     media_type: MediaType
@@ -47,14 +65,13 @@ class MovieRecommendation(_MovieBase):
 
 class Movie(_MovieBase):
     budget: int
-    collection: Collection
+    collection: PartialCollection
     credits: Credits
     external_ids: ExternalIds
     genres: list[Genre]
     homepage: str
     imdb_id: str
     keywords: list[Keyword]
-    media_info: MediaInfo | None = None
     on_user_watchlist: bool
     production_companies: list[ProductionCompany]
     production_countries: list[ProductionCountry]

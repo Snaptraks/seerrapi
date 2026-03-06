@@ -130,17 +130,17 @@ class Cast(Base):
     cast_id: int | None = None
     character: str
     credit_id: str
-    gender: Gender
-    name: str
-    order: int
+    gender: Gender | None = None
+    name: str | None = None
+    order: int | None = None
     profile_path: str | None = None
 
 
 class Crew(Base):
     id: int
     credit_id: str
-    gender: Gender
-    name: str
+    gender: Gender | None = None
+    name: str | None = None
     job: str
     department: str
     profile_path: str | None = None
@@ -149,13 +149,6 @@ class Crew(Base):
 class Credits(Base):
     cast: list[Cast]
     crew: list[Crew]
-
-
-class Collection(Base):
-    id: int
-    name: str
-    poster_path: str
-    backdrop_path: str
 
 
 class ExternalIds(Base):

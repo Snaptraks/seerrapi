@@ -3,7 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Literal, Protocol, TypedDict, Unpack
 
 from .http import HTTP, APIPath
-from .movies import Movie
+from .movies import Collection, Movie
+from .person import Person
 from .public import AppData, Status
 from .request import (
     MediaType,
@@ -119,4 +120,29 @@ class SeerrClient:
                 params={"language": language},
             ),
             http=self.http,
+        )
+
+    # Person endpoints
+
+    async def get_person(self, person_id: int, *, language: str = "en") -> Person:
+        return Person.from_data(
+            await self.http.request(
+                "GET",
+                APIPath("/person/{person_id}", person_id=person_id),
+                params={"language": language},
+            ),
+            http=self.http,
+        )
+
+    # Collection endpoints
+
+    async def get_collection(
+        self, collection_id: int, *, language: str = "en"
+    ) -> Collection:
+        return Collection.from_data(
+            await self.http.request(
+                "GET",
+                APIPath("/collection/{collection_id}", collection_id=collection_id),
+                params={"language": language},
+            )
         )

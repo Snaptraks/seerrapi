@@ -3,6 +3,7 @@ import pytest_asyncio
 
 from seerrapi.client import SeerrClient
 from seerrapi.movies import Movie
+from seerrapi.person import Person
 from seerrapi.request import Request
 from seerrapi.settings import MainSettings
 from seerrapi.tv import TV
@@ -33,3 +34,8 @@ async def seerr_movie(seerr_client: SeerrClient) -> Movie:
 @pytest_asyncio.fixture
 async def seerr_tv(seerr_client: SeerrClient) -> TV:
     return await seerr_client.get_tv(96580)
+
+
+@pytest_asyncio.fixture
+async def seerr_person(seerr_client: SeerrClient) -> Person:
+    return await seerr_client.get_person(1)

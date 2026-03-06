@@ -11,6 +11,7 @@ from .request import (
     RequestCount,
 )
 from .settings import MainSettings, NetworkSettings
+from .tv import TV
 
 if TYPE_CHECKING:
     from .request import (
@@ -103,6 +104,18 @@ class SeerrClient:
             await self.http.request(
                 "GET",
                 APIPath("/movie/{movie_id}", movie_id=movie_id),
+                params={"language": language},
+            ),
+            http=self.http,
+        )
+
+    # TV endpoints
+
+    async def get_tv(self, tv_id: int, *, language: str = "en") -> TV:
+        return TV.from_data(
+            await self.http.request(
+                "GET",
+                APIPath("/tv/{tv_id}", tv_id=tv_id),
                 params={"language": language},
             ),
             http=self.http,

@@ -5,6 +5,7 @@ from seerrapi.client import SeerrClient
 from seerrapi.movies import Movie
 from seerrapi.request import Request
 from seerrapi.settings import MainSettings
+from seerrapi.tv import TV
 
 from .config import SEERR_API_KEY
 
@@ -27,3 +28,8 @@ async def seerr_request(seerr_client: SeerrClient) -> Request:
 @pytest_asyncio.fixture
 async def seerr_movie(seerr_client: SeerrClient) -> Movie:
     return await seerr_client.get_movie(105)
+
+
+@pytest_asyncio.fixture
+async def seerr_tv(seerr_client: SeerrClient) -> TV:
+    return await seerr_client.get_tv(96580)

@@ -8,6 +8,7 @@ from seerrapi.movies import Movie
 from seerrapi.public import AppData, Status
 from seerrapi.request import MediaType, Request, RequestCount
 from seerrapi.settings import MainSettings, NetworkSettings
+from seerrapi.tv import TV
 
 # Public methods
 
@@ -89,3 +90,12 @@ async def test_client_get_request_by_id(seerr_client: SeerrClient) -> None:
 async def test_client_get_movie(seerr_client: SeerrClient) -> None:
     movie = await seerr_client.get_movie(105)
     assert isinstance(movie, Movie)
+
+
+# TV methods
+
+
+@pytest.mark.asyncio
+async def test_client_get_tv(seerr_client: SeerrClient) -> None:
+    tv = await seerr_client.get_tv(96580)
+    assert isinstance(tv, TV)

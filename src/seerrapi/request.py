@@ -55,7 +55,7 @@ class MediaStatus(IntEnum):
     DELETED = 6
 
 
-class MediaInfo(Base):
+class _MediaInfoBase(Base):
     download_status: list[str]
     download_status_4k: list[str]
     id: int
@@ -81,6 +81,9 @@ class MediaInfo(Base):
     jellyfin_media_id_4k: int | None
     requests: list[Request] = Field(default_factory=list)
     service_url: str | None = None
+
+
+class MediaInfo(_MediaInfoBase):
     seasons: list[int] | Literal["all"] = Field(default_factory=list)
 
 

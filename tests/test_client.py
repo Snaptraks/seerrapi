@@ -8,6 +8,7 @@ from seerrapi.movies import Collection, Movie
 from seerrapi.person import Person
 from seerrapi.public import AppData, Status
 from seerrapi.request import MediaType, Request, RequestCount
+from seerrapi.service import Radarr, Sonarr
 from seerrapi.settings import MainSettings, NetworkSettings
 from seerrapi.tv import TV
 
@@ -118,3 +119,24 @@ async def test_client_get_person(seerr_client: SeerrClient) -> None:
 async def test_client_get_collection(seerr_client: SeerrClient) -> None:
     collection = await seerr_client.get_collection(119)
     assert isinstance(collection, Collection)
+
+
+# Service methods
+
+
+@pytest.mark.asyncio
+async def test_client_get_radarr(seerr_client: SeerrClient) -> None:
+    services = await seerr_client.get_radarr()
+
+    assert isinstance(services, list)
+    for service in services:
+        assert isinstance(service, Radarr)
+
+
+@pytest.mark.asyncio
+async def test_client_get_sonarr(seerr_client: SeerrClient) -> None:
+    services = await seerr_client.get_sonarr()
+
+    assert isinstance(services, list)
+    for service in services:
+        assert isinstance(service, Sonarr)

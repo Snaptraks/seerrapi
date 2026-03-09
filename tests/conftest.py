@@ -5,6 +5,7 @@ from seerrapi.client import SeerrClient
 from seerrapi.movies import Movie
 from seerrapi.person import Person
 from seerrapi.request import Request
+from seerrapi.service import Radarr, Sonarr
 from seerrapi.settings import MainSettings
 from seerrapi.tv import TV
 
@@ -39,3 +40,13 @@ async def seerr_tv(seerr_client: SeerrClient) -> TV:
 @pytest_asyncio.fixture
 async def seerr_person(seerr_client: SeerrClient) -> Person:
     return await seerr_client.get_person(1)
+
+
+@pytest_asyncio.fixture
+async def seerr_radarr(seerr_client: SeerrClient) -> Radarr:
+    return (await seerr_client.get_radarr())[0]
+
+
+@pytest_asyncio.fixture
+async def seerr_sonarr(seerr_client: SeerrClient) -> Sonarr:
+    return (await seerr_client.get_sonarr())[0]

@@ -11,6 +11,7 @@ from .request import (
     Request,
     RequestCount,
 )
+from .service import Radarr, Sonarr
 from .settings import MainSettings, NetworkSettings
 from .tv import TV
 
@@ -145,4 +146,16 @@ class SeerrClient:
                 APIPath("/collection/{collection_id}", collection_id=collection_id),
                 params={"language": language},
             )
+        )
+
+    # Service endpoints
+
+    async def get_radarr(self) -> list[Radarr]:
+        return Radarr.from_data_list(
+            await self.http.request("GET", APIPath("/service/radarr")), http=self.http
+        )
+
+    async def get_sonarr(self) -> list[Sonarr]:
+        return Sonarr.from_data_list(
+            await self.http.request("GET", APIPath("/service/sonarr")), http=self.http
         )

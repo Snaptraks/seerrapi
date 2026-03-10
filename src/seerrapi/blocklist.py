@@ -34,7 +34,7 @@ class BlocklistFilter(StrEnum):
     BLOCKLISTED_TAGS = "blocklistedTags"
 
 
-class Blocklist:
+class BlocklistEndpoints:
     def __init__(self, client: SeerrClient) -> None:
         self.client = client
 

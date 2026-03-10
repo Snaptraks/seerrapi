@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Literal, Protocol, TypedDict, Unpack
 
 from . import MediaServerType
-from .blocklist import Blocklist
+from .blocklist import BlocklistEndpoints
 from .http import HTTP, APIPath
 from .movies import Collection, Movie
 from .person import Person
@@ -48,7 +48,7 @@ class SeerrClient:
         self.http = HTTP(host=host, _api_key=api_key)
         self._cookie_auth: str | None = None
 
-        self.blocklist = Blocklist(self)
+        self.blocklist = BlocklistEndpoints(self)
 
     # Public endpoints
 

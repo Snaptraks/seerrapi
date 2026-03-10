@@ -1,15 +1,25 @@
+from dataclasses import dataclass
+
 import pytest
 import pytest_asyncio
 
 from seerrapi.client import SeerrClient
 from seerrapi.movies import Movie
 from seerrapi.person import Person
-from seerrapi.request import Request
+from seerrapi.request import MediaType, Request
 from seerrapi.service import Radarr, Sonarr
 from seerrapi.settings import MainSettings
 from seerrapi.tv import TV
 
 from .config import SEERR_API_KEY, SEERR_HOST
+
+
+@dataclass
+class MediaInfo:
+    tmdb_id: int
+    title: str
+    media_type: MediaType
+    user: int
 
 
 @pytest.fixture(scope="session")
@@ -55,3 +65,13 @@ async def seerr_radarr(seerr_client: SeerrClient) -> Radarr:
 @pytest_asyncio.fixture
 async def seerr_sonarr(seerr_client: SeerrClient) -> Sonarr:
     return (await seerr_client.get_sonarr())[0]
+
+
+@pytest.fixture
+def seerr_media() -> MediaInfo:
+    return MediaInfo(
+        tmdb_id=1413097,
+        title="Melania",
+        media_type=MediaType.MOVIE,
+        user=1,
+    )

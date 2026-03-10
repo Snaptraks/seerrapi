@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from importlib import metadata
+from json import JSONDecodeError
 from typing import TYPE_CHECKING, Any, Literal
 from urllib.parse import quote as _uriquote
 
@@ -48,7 +49,10 @@ class HTTP:
 
         resp = await self._raw_request(method, path, payload=payload, params=params)
 
-        return resp.json()
+        try:
+            return resp.json()
+        except JSONDecodeError:
+            return None
 
     async def _raw_request(
         self,
@@ -93,7 +97,11 @@ class HTTP:
             msg = "Unexpected response from Seerr"
             raise SeerrConnectionError(
                 msg,
-                {"Content-Type": content_type, "response": text},
+                {
+                    "Content-Type": content_type,
+                    "response": text,
+                    "status_code": resp.status_code,
+                },
             )
 
         return resp

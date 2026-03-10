@@ -9,12 +9,17 @@ from seerrapi.service import Radarr, Sonarr
 from seerrapi.settings import MainSettings
 from seerrapi.tv import TV
 
-from .config import SEERR_API_KEY
+from .config import SEERR_API_KEY, SEERR_HOST
 
 
 @pytest.fixture(scope="session")
 def seerr_client() -> SeerrClient:
-    return SeerrClient(host="http://localhost:5055", api_key=SEERR_API_KEY)
+    return SeerrClient(host=SEERR_HOST, api_key=SEERR_API_KEY)
+
+
+@pytest_asyncio.fixture(scope="function")
+async def temp_seerr_client() -> SeerrClient:
+    return SeerrClient(host=SEERR_HOST)
 
 
 @pytest_asyncio.fixture

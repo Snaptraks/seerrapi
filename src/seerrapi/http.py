@@ -34,7 +34,8 @@ class APIPath:
 @dataclass
 class HTTP:
     host: str
-    api_key: str
+    _api_key: str | None = None
+    _cookie_auth: str | None = None
 
     async def request(
         self,
@@ -44,11 +45,30 @@ class HTTP:
         payload: dict | None = None,
         params: dict | None = None,
     ) -> Any:
+
+        resp = await self._raw_request(method, path, payload=payload, params=params)
+
+        return resp.json()
+
+    async def _raw_request(
+        self,
+        method: Method,
+        path: APIPath,
+        *,
+        payload: dict | None = None,
+        params: dict | None = None,
+    ) -> httpx.Response:
         headers = {
             "User-Agent": f"SeerrAPI/{VERSION}",
             "Accept": "application/json",
-            "X-Api-Key": self.api_key,
         }
+        cookies: dict[str, str] = {}
+        if self._api_key is not None:
+            headers["X-Api-Key"] = self._api_key
+
+        if self._cookie_auth is not None:
+            cookies["connect.sid"] = self._cookie_auth
+
         url = f"{self.host}{path}"
         if payload is not None:
             payload = to_camel_case_dict(payload)
@@ -57,14 +77,14 @@ class HTTP:
             params = to_camel_case_dict(params)
 
         try:
-            async with httpx.AsyncClient(headers=headers) as session:
+            async with httpx.AsyncClient(headers=headers, cookies=cookies) as session:
                 resp = await session.request(method, url, json=payload, params=params)
         except (httpx.ConnectError, httpx.RequestError) as e:
             msg = "Error occured while connecting to Seerr"
             raise SeerrConnectionError(msg) from e
 
         if resp.status_code == 403:  # noqa: PLR2004
-            msg = "Invalid API key"
+            msg = "Client is not authenticated"
             raise SeerrAuthenticationError(msg)
 
         if resp.status_code >= 400:  # noqa: PLR2004
@@ -76,4 +96,4 @@ class HTTP:
                 {"Content-Type": content_type, "response": text},
             )
 
-        return resp.json()
+        return resp

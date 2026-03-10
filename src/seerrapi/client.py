@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal, Protocol, TypedDict, Unpack
 
+from . import MediaServerType
 from .http import HTTP, APIPath
 from .movies import Collection, Movie
 from .person import Person
@@ -14,6 +15,7 @@ from .request import (
 from .service import Radarr, Sonarr
 from .settings import MainSettings, NetworkSettings
 from .tv import TV
+from .users import User
 
 if TYPE_CHECKING:
     from .request import (
@@ -39,10 +41,11 @@ if TYPE_CHECKING:
 
 
 class SeerrClient:
-    def __init__(self, *, host: str, api_key: str) -> None:
+    def __init__(self, *, host: str, api_key: str | None = None) -> None:
         self.host = host.removesuffix("/")
         self.api_key = api_key
-        self.http = HTTP(host=host, api_key=api_key)
+        self.http = HTTP(host=host, _api_key=api_key)
+        self._cookie_auth: str | None = None
 
     # Public endpoints
 
@@ -65,6 +68,42 @@ class SeerrClient:
         return NetworkSettings.from_data(
             await self.http.request("GET", APIPath("/settings/network")), http=self.http
         )
+
+    # Auth endpoints
+
+    async def me(self) -> User:
+        return User.from_data(await self.http.request("GET", APIPath("/auth/me")))
+
+    async def auth_plex(self, auth_token: str) -> None:
+        resp = await self.http._raw_request(
+            "POST", APIPath("/auth/plex"), payload={"auth_token": auth_token}
+        )
+        self.http._cookie_auth = resp.cookies["connect.sid"]
+
+    async def auth_jellyfin(
+        self, *, username: str, password: str, hostname: str, email: str
+    ) -> None:
+        payload = {
+            "username": username,
+            "password": password,
+            "hostname": hostname,
+            "email": email,
+            "server_type": MediaServerType.JELLYFIN,
+        }
+        resp = await self.http._raw_request(
+            "POST", APIPath("/auth/jellyfin"), payload=payload
+        )
+        self.http._cookie_auth = resp.cookies["connect.sid"]
+
+    async def auth_local(self, *, email: str, password: str) -> None:
+        payload = {"email": email, "password": password}
+        resp = await self.http._raw_request(
+            "POST", APIPath("/auth/local"), payload=payload
+        )
+        self.http._cookie_auth = resp.cookies["connect.sid"]
+
+    async def logout(self) -> None:
+        await self.http._raw_request("POST", APIPath("/auth/logout"))
 
     # Requests endpoints
 

@@ -1,9 +1,9 @@
-from dataclasses import dataclass, field
 from datetime import datetime
 
+from . import Base
 
-@dataclass
-class User:
+
+class User(Base):
     permissions: int
     warnings: list
     id: int
@@ -26,4 +26,4 @@ class User:
     updated_at: datetime
     request_count: int
     display_name: str
-    settings: None = field(default=None)
+    settings: None = None

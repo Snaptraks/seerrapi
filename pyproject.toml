@@ -24,11 +24,12 @@
     ]
 
 [tool.pytest.ini_options]
-    asyncio_default_fixture_loop_scope = "function"
+    asyncio_default_fixture_loop_scope = "session"
 
 [tool.ruff.lint]
     ignore = [
         "ANN401", # any-type
+        "SLF001", # private-member-access
     ]
 
 [tool.ruff.lint.flake8-type-checking]
@@ -49,5 +50,4 @@
     # Ignore rules in the "src" directory
     "src/*" = [
         "RUF009", # function-call-in-dataclass-default-argument (because of pydantic
-        "SLF001", # private-member-access
     ]

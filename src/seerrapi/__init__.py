@@ -54,6 +54,13 @@ class Stateful(BaseModel):
         return objs
 
 
+class MediaServerType(IntEnum):
+    PLEX = 1
+    JELLYFIN = 2
+    EMBY = 3
+    NOT_CONFIGURED = 4
+
+
 class Genre(Base):
     id: int
     name: str

@@ -5,7 +5,6 @@ import pytest
 
 from seerrapi import MediaType
 from seerrapi.client import SeerrClient
-from seerrapi.collection import Collection
 from seerrapi.errors import SeerrAuthenticationError
 from seerrapi.movies import Movie
 from seerrapi.person import Person
@@ -149,12 +148,3 @@ async def test_client_get_tv(seerr_client: SeerrClient) -> None:
 async def test_client_get_person(seerr_client: SeerrClient) -> None:
     person = await seerr_client.get_person(1)
     assert isinstance(person, Person)
-
-
-# Collection methods
-
-
-@pytest.mark.asyncio
-async def test_client_get_collection(seerr_client: SeerrClient) -> None:
-    collection = await seerr_client.get_collection(119)
-    assert isinstance(collection, Collection)

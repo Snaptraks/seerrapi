@@ -4,8 +4,9 @@ from typing import TYPE_CHECKING, Literal, Protocol, TypedDict, Unpack
 
 from . import MediaServerType, MediaType
 from .blocklist import BlocklistEndpoints
+from .collection import CollectionEndpoints
 from .http import HTTP, APIPath
-from .movies import Collection, Movie
+from .movies import Movie
 from .person import Person
 from .public import StatusEndpoints
 from .request import (
@@ -52,6 +53,7 @@ class SeerrClient:
         self.blocklist = BlocklistEndpoints(self)
         self.search = SearchEndpoints(self)
         self.discover = DiscoverEndpoints(self)
+        self.collection = CollectionEndpoints(self)
         self.service = ServiceEndpoints(self)
 
     # Settings endpoints
@@ -169,17 +171,4 @@ class SeerrClient:
                 params={"language": language},
             ),
             http=self.http,
-        )
-
-    # Collection endpoints
-
-    async def get_collection(
-        self, collection_id: int, *, language: str = "en"
-    ) -> Collection:
-        return Collection.from_data(
-            await self.http.request(
-                "GET",
-                APIPath("/collection/{collection_id}", collection_id=collection_id),
-                params={"language": language},
-            )
         )

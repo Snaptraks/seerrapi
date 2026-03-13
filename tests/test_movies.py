@@ -1,7 +1,14 @@
 import pytest
 
 from seerrapi import IMDBRatings, RottenTomatoesRatings
+from seerrapi.client import SeerrClient
 from seerrapi.movies import Movie, MovieRecommendation
+
+
+@pytest.mark.asyncio
+async def test_movie(seerr_client: SeerrClient) -> None:
+    movie = await seerr_client.movie(105)
+    assert isinstance(movie, Movie)
 
 
 @pytest.mark.asyncio

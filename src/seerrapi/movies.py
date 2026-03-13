@@ -18,6 +18,7 @@ from . import (
     SpokenLanguage,
     Stateful,
     WatchProvider,
+    _Endpoints,
 )
 from .http import APIPath
 from .request import MediaInfo
@@ -120,4 +121,16 @@ class Movie(_MovieBase):
         return (
             RottenTomatoesRatings.from_data(resp["rt"]),
             IMDBRatings.from_data(resp["imdb"]),
+        )
+
+
+class MovieEndpoints(_Endpoints):
+    async def __call__(self, movie_id: int, *, language: str = "en") -> Movie:
+        return Movie.from_data(
+            await self.client.http.request(
+                "GET",
+                APIPath("/movie/{movie_id}", movie_id=movie_id),
+                params={"language": language},
+            ),
+            http=self.client.http,
         )

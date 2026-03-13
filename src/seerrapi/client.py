@@ -6,7 +6,7 @@ from . import MediaServerType, MediaType
 from .blocklist import BlocklistEndpoints
 from .collection import CollectionEndpoints
 from .http import HTTP, APIPath
-from .movies import Movie
+from .movies import MovieEndpoints
 from .person import Person
 from .public import StatusEndpoints
 from .request import (
@@ -53,6 +53,7 @@ class SeerrClient:
         self.blocklist = BlocklistEndpoints(self)
         self.search = SearchEndpoints(self)
         self.discover = DiscoverEndpoints(self)
+        self.movie = MovieEndpoints(self)
         self.collection = CollectionEndpoints(self)
         self.service = ServiceEndpoints(self)
 
@@ -133,18 +134,6 @@ class SeerrClient:
         return Request.from_data(
             await self.http.request(
                 "GET", APIPath(f"/request/{request_id}", request_id=request_id)
-            ),
-            http=self.http,
-        )
-
-    # Movies endpoints
-
-    async def get_movie(self, movie_id: int, *, language: str = "en") -> Movie:
-        return Movie.from_data(
-            await self.http.request(
-                "GET",
-                APIPath("/movie/{movie_id}", movie_id=movie_id),
-                params={"language": language},
             ),
             http=self.http,
         )

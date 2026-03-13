@@ -37,7 +37,7 @@ async def seerr_request(seerr_client: SeerrClient) -> Request:
 
 @pytest_asyncio.fixture
 async def seerr_movie(seerr_client: SeerrClient) -> Movie:
-    return await seerr_client.get_movie(105)
+    return await seerr_client.movie(105)
 
 
 @pytest_asyncio.fixture

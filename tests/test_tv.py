@@ -1,7 +1,16 @@
 import pytest
 
 from seerrapi import RottenTomatoesRatings
+from seerrapi.client import SeerrClient
 from seerrapi.tv import TV, Season, TVRecommendation
+
+# TV methods
+
+
+@pytest.mark.asyncio
+async def test_tv(seerr_client: SeerrClient) -> None:
+    tv = await seerr_client.tv(96580)
+    assert isinstance(tv, TV)
 
 
 @pytest.mark.asyncio

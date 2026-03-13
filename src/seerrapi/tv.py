@@ -19,6 +19,7 @@ from . import (
     SpokenLanguage,
     Stateful,
     WatchProvider,
+    _Endpoints,
 )
 from .http import APIPath
 from .request import _MediaInfoBase
@@ -89,7 +90,7 @@ class TVRecommendation(_TVBase):
 
 class TV(_TVBase):
     content_ratings: list[ContentRatings] = Field(
-        validation_alias=AliasPath("contentRatings", "results")
+        validation_alias=AliasPath("contentRatings", "results"),
     )
     created_by: list[Creator]
     credits: Credits
@@ -126,11 +127,11 @@ class TV(_TVBase):
                     season_number=season_number,
                 ),
                 params={"language": language},
-            )
+            ),
         )
 
     async def get_recommendations(
-        self, *, page: int = 1, language: str = "en"
+        self, *, page: int = 1, language: str = "en",
     ) -> list[TVRecommendation]:
         resp = await self.http.request(
             "GET",
@@ -140,7 +141,7 @@ class TV(_TVBase):
         return TVRecommendation.from_data_list(resp["results"], http=self.http)
 
     async def get_similar(
-        self, *, page: int = 1, language: str = "en"
+        self, *, page: int = 1, language: str = "en",
     ) -> list[TVRecommendation]:
         resp = await self.http.request(
             "GET",
@@ -153,6 +154,18 @@ class TV(_TVBase):
         # Only Rotten Tomatoes
         return RottenTomatoesRatings.from_data(
             await self.http.request(
-                "GET", APIPath("/tv/{tv_id}/ratings", tv_id=self.id)
-            )
+                "GET", APIPath("/tv/{tv_id}/ratings", tv_id=self.id),
+            ),
+        )
+
+
+class TVEndpoints(_Endpoints):
+    async def __call__(self, tv_id: int, *, language: str = "en") -> TV:
+        return TV.from_data(
+            await self.client.http.request(
+                "GET",
+                APIPath("/tv/{tv_id}", tv_id=tv_id),
+                params={"language": language},
+            ),
+            http=self.client.http,
         )

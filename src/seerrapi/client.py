@@ -16,7 +16,7 @@ from .request import (
 from .search import DiscoverEndpoints, SearchEndpoints
 from .service import ServiceEndpoints
 from .settings import MainSettings, NetworkSettings
-from .tv import TV
+from .tv import TVEndpoints
 from .users import User
 
 if TYPE_CHECKING:
@@ -54,6 +54,7 @@ class SeerrClient:
         self.search = SearchEndpoints(self)
         self.discover = DiscoverEndpoints(self)
         self.movie = MovieEndpoints(self)
+        self.tv = TVEndpoints(self)
         self.collection = CollectionEndpoints(self)
         self.service = ServiceEndpoints(self)
 
@@ -61,12 +62,14 @@ class SeerrClient:
 
     async def get_main_settings(self) -> MainSettings:
         return MainSettings.from_data(
-            await self.http.request("GET", APIPath("/settings/main")), http=self.http
+            await self.http.request("GET", APIPath("/settings/main")),
+            http=self.http,
         )
 
     async def get_network_settings(self) -> NetworkSettings:
         return NetworkSettings.from_data(
-            await self.http.request("GET", APIPath("/settings/network")), http=self.http
+            await self.http.request("GET", APIPath("/settings/network")),
+            http=self.http,
         )
 
     # Auth endpoints
@@ -76,12 +79,19 @@ class SeerrClient:
 
     async def auth_plex(self, auth_token: str) -> None:
         resp = await self.http._raw_request(
-            "POST", APIPath("/auth/plex"), payload={"auth_token": auth_token}
+            "POST",
+            APIPath("/auth/plex"),
+            payload={"auth_token": auth_token},
         )
         self.http._cookie_auth = resp.cookies["connect.sid"]
 
     async def auth_jellyfin(
-        self, *, username: str, password: str, hostname: str, email: str
+        self,
+        *,
+        username: str,
+        password: str,
+        hostname: str,
+        email: str,
     ) -> None:
         payload = {
             "username": username,
@@ -91,14 +101,18 @@ class SeerrClient:
             "server_type": MediaServerType.JELLYFIN,
         }
         resp = await self.http._raw_request(
-            "POST", APIPath("/auth/jellyfin"), payload=payload
+            "POST",
+            APIPath("/auth/jellyfin"),
+            payload=payload,
         )
         self.http._cookie_auth = resp.cookies["connect.sid"]
 
     async def auth_local(self, *, email: str, password: str) -> None:
         payload = {"email": email, "password": password}
         resp = await self.http._raw_request(
-            "POST", APIPath("/auth/local"), payload=payload
+            "POST",
+            APIPath("/auth/local"),
+            payload=payload,
         )
         self.http._cookie_auth = resp.cookies["connect.sid"]
 
@@ -127,25 +141,14 @@ class SeerrClient:
 
     async def get_requests_count(self) -> RequestCount:
         return RequestCount.from_data(
-            await self.http.request("GET", APIPath("/request/count"))
+            await self.http.request("GET", APIPath("/request/count")),
         )
 
     async def get_request(self, request_id: int) -> Request:
         return Request.from_data(
             await self.http.request(
-                "GET", APIPath(f"/request/{request_id}", request_id=request_id)
-            ),
-            http=self.http,
-        )
-
-    # TV endpoints
-
-    async def get_tv(self, tv_id: int, *, language: str = "en") -> TV:
-        return TV.from_data(
-            await self.http.request(
                 "GET",
-                APIPath("/tv/{tv_id}", tv_id=tv_id),
-                params={"language": language},
+                APIPath(f"/request/{request_id}", request_id=request_id),
             ),
             http=self.http,
         )

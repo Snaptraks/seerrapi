@@ -4,13 +4,11 @@ from datetime import datetime
 from enum import StrEnum
 from typing import TYPE_CHECKING, Any, Protocol
 
-from . import Base
+from . import Base, MediaType, _Endpoints
 from .http import APIPath
-from .request import MediaType
 from .users import User
 
 if TYPE_CHECKING:
-    from .client import SeerrClient
 
     class MediaInfo(Protocol):
         title: str
@@ -34,10 +32,7 @@ class BlocklistFilter(StrEnum):
     BLOCKLISTED_TAGS = "blocklistedTags"
 
 
-class BlocklistEndpoints:
-    def __init__(self, client: SeerrClient) -> None:
-        self.client = client
-
+class BlocklistEndpoints(_Endpoints):
     async def __call__(
         self,
         take: int = 25,

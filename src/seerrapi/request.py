@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from datetime import datetime
-from enum import IntEnum, StrEnum
+from enum import IntEnum
 from typing import TYPE_CHECKING, Literal, TypedDict, Unpack
 
 from pydantic import Field
 
-from . import Base, Stateful
+from . import Base, MediaType, Stateful
 from .http import APIPath
 from .users import User
 
@@ -39,11 +39,6 @@ if TYPE_CHECKING:
 
 
 # Media objects
-
-
-class MediaType(StrEnum):
-    MOVIE = "movie"
-    TV = "tv"
 
 
 class MediaStatus(IntEnum):

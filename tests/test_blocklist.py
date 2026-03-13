@@ -3,7 +3,7 @@ import pytest
 from seerrapi.blocklist import BlocklistFilter, BlocklistItem
 from seerrapi.client import SeerrClient
 
-from .conftest import MediaInfo
+from . import MediaInfo
 
 
 @pytest.mark.asyncio

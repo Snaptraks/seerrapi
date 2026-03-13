@@ -3,12 +3,13 @@ from typing import Literal
 
 import pytest
 
+from seerrapi import MediaType
 from seerrapi.client import SeerrClient
 from seerrapi.errors import SeerrAuthenticationError
 from seerrapi.movies import Collection, Movie
 from seerrapi.person import Person
 from seerrapi.public import AppData, Status
-from seerrapi.request import MediaType, Request, RequestCount
+from seerrapi.request import Request, RequestCount
 from seerrapi.service import Radarr, Sonarr
 from seerrapi.settings import MainSettings, NetworkSettings
 from seerrapi.tv import TV

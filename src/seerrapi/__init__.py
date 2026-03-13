@@ -1,11 +1,17 @@
+from __future__ import annotations
+
 from datetime import datetime
 from enum import IntEnum, StrEnum
-from typing import Any, Self
+from typing import TYPE_CHECKING, Any, Self
 
 from pydantic import AliasChoices, AliasGenerator, BaseModel, ConfigDict, Field
 
-from .http import HTTP
 from .utils import to_camel_case
+
+if TYPE_CHECKING:
+    from .client import SeerrClient
+    from .http import HTTP
+
 
 _model_config = ConfigDict(
     alias_generator=AliasGenerator(
@@ -13,6 +19,11 @@ _model_config = ConfigDict(
         serialization_alias=to_camel_case,
     )
 )
+
+
+class _Endpoints:
+    def __init__(self, client: SeerrClient) -> None:
+        self.client = client
 
 
 class Base(BaseModel):
@@ -61,6 +72,12 @@ class MediaServerType(IntEnum):
     NOT_CONFIGURED = 4
 
 
+class MediaType(StrEnum):
+    MOVIE = "movie"
+    TV = "tv"
+    PERSON = "person"
+
+
 class Genre(Base):
     id: int
     name: str
@@ -92,9 +109,12 @@ class RelatedVideo(Base):
 
 class ProductionCompany(Base):
     id: int
-    logo_path: str
-    origin_country: str
+    description: str | None = None
+    headquarters: str | None = None
+    homepage: str | None = None
+    logo_path: str | None = None
     name: str
+    origin_country: str | None = None
 
 
 class ProductionCountry(Base):
@@ -218,3 +238,11 @@ class Creator(Base):
     original_name: str = Field(alias="original_name")
     gender: int
     profile_path: str | None = Field(default=None, alias="profile_path")
+
+
+class WatchlistItem(Base):
+    id: int
+    media_type: MediaType
+    rating_key: str
+    title: str
+    tmdb_id: int

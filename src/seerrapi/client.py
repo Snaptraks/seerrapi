@@ -2,17 +2,17 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal, Protocol, TypedDict, Unpack
 
-from . import MediaServerType
+from . import MediaServerType, MediaType
 from .blocklist import BlocklistEndpoints
 from .http import HTTP, APIPath
 from .movies import Collection, Movie
 from .person import Person
 from .public import AppData, Status
 from .request import (
-    MediaType,
     Request,
     RequestCount,
 )
+from .search import DiscoverEndpoints, SearchEndpoints
 from .service import Radarr, Sonarr
 from .settings import MainSettings, NetworkSettings
 from .tv import TV
@@ -49,6 +49,8 @@ class SeerrClient:
         self._cookie_auth: str | None = None
 
         self.blocklist = BlocklistEndpoints(self)
+        self.search = SearchEndpoints(self)
+        self.discover = DiscoverEndpoints(self)
 
     # Public endpoints
 

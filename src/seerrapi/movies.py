@@ -11,6 +11,7 @@ from . import (
     Genre,
     IMDBRatings,
     Keyword,
+    MediaType,
     ProductionCompany,
     ProductionCountry,
     RelatedVideo,
@@ -21,7 +22,8 @@ from . import (
     WatchProvider,
 )
 from .http import APIPath
-from .request import MediaInfo, MediaType
+from .request import MediaInfo
+from .utils import DateOrEmptyStr
 
 
 class PartialCollection(Base):
@@ -46,7 +48,7 @@ class _MovieBase(Stateful):
     overview: str
     popularity: float
     poster_path: str | None
-    release_date: date
+    release_date: DateOrEmptyStr
     title: str
     video: bool
     vote_average: float

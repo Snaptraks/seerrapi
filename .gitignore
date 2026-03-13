@@ -13,3 +13,6 @@ wheels/
 .env
 tests/config.py
 compose.yml
+
+# utils files
+tests/get_tmdb_data.py

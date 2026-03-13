@@ -1,25 +1,18 @@
-from dataclasses import dataclass
-
 import pytest
 import pytest_asyncio
 
+from seerrapi import Genre, Keyword, MediaType, ProductionCompany
 from seerrapi.client import SeerrClient
+from seerrapi.languages import Language
 from seerrapi.movies import Movie
 from seerrapi.person import Person
-from seerrapi.request import MediaType, Request
+from seerrapi.request import Request
 from seerrapi.service import Radarr, Sonarr
 from seerrapi.settings import MainSettings
 from seerrapi.tv import TV
 
+from . import MediaInfo
 from .config import SEERR_API_KEY, SEERR_HOST
-
-
-@dataclass
-class MediaInfo:
-    tmdb_id: int
-    title: str
-    media_type: MediaType
-    user: int
 
 
 @pytest.fixture(scope="session")
@@ -50,6 +43,46 @@ async def seerr_movie(seerr_client: SeerrClient) -> Movie:
 @pytest_asyncio.fixture
 async def seerr_tv(seerr_client: SeerrClient) -> TV:
     return await seerr_client.get_tv(96580)
+
+
+@pytest.fixture
+def seerr_genre() -> Genre:
+    return Genre(id=16, name="Animation")
+
+
+@pytest.fixture
+def seerr_language() -> Language:
+    return Language.FRENCH
+
+
+@pytest.fixture
+def seerr_studio() -> ProductionCompany:
+    return ProductionCompany(
+        id=2,
+        name="Walt Disney Pictures",
+        origin_country="US",
+        description="",
+        headquarters="Burbank, California",
+        homepage="https://movies.disney.com",
+        logo_path="/wdrCwmRnLFJhEoH8GSfymY85KHT.png",
+    )
+
+
+@pytest.fixture
+def seerr_network() -> ProductionCompany:
+    return ProductionCompany(
+        id=2,
+        name="ABC",
+        origin_country="US",
+        headquarters="New York City, New York",
+        homepage="https://abc.com",
+        logo_path="/2uy2ZWcplrSObIyt4x0Y9rkG6qO.png",
+    )
+
+
+@pytest.fixture
+def seerr_keyword() -> Keyword:
+    return Keyword(id=242214, name="origin story")
 
 
 @pytest_asyncio.fixture

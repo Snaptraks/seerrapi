@@ -79,6 +79,9 @@ class HTTP:
 
         if params is not None:
             params = to_camel_case_dict(params)
+            params = {
+                k: _uriquote(v) if isinstance(v, str) else v for k, v in params.items()
+            }
 
         try:
             async with httpx.AsyncClient(headers=headers, cookies=cookies) as session:

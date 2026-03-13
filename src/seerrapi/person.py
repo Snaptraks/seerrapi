@@ -1,14 +1,19 @@
 from datetime import date
 
+from pydantic import Field
+
 from . import Credits, Gender, Stateful
 from .http import APIPath
+from .movies import Movie
+from .tv import TV
 
 
 class Person(Stateful):
     id: int
     name: str
-    birthday: date
+    birthday: date | None
     deathdat: date | None = None
+    known_for: list[Movie | TV] = Field(default_factory=list)
     known_for_department: str
     also_known_as: list[str]
     gender: Gender

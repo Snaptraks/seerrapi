@@ -12,6 +12,7 @@ from . import (
     ExternalIds,
     Genre,
     Keyword,
+    MediaType,
     ProductionCompany,
     ProductionCountry,
     RottenTomatoesRatings,
@@ -20,7 +21,7 @@ from . import (
     WatchProvider,
 )
 from .http import APIPath
-from .request import MediaType, _MediaInfoBase
+from .request import _MediaInfoBase
 
 
 class ContentRatings(Base):

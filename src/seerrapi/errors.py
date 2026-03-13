@@ -11,3 +11,7 @@ class SeerrConnectionError(SeerrError):
 
 class SeerrAuthenticationError(SeerrError):
     """Error raised from a unauthenticated call to Seerr."""
+
+
+class SeerrSearchError(SeerrError):
+    """Error raised when invalid parameters are passed to discover search."""

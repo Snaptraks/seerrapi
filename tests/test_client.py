@@ -5,11 +5,11 @@ import pytest
 
 from seerrapi import MediaType
 from seerrapi.client import SeerrClient
+from seerrapi.collection import Collection
 from seerrapi.errors import SeerrAuthenticationError
-from seerrapi.movies import Collection, Movie
+from seerrapi.movies import Movie
 from seerrapi.person import Person
 from seerrapi.request import Request, RequestCount
-from seerrapi.service import Radarr, Sonarr
 from seerrapi.settings import MainSettings, NetworkSettings
 from seerrapi.tv import TV
 from seerrapi.users import User
@@ -158,24 +158,3 @@ async def test_client_get_person(seerr_client: SeerrClient) -> None:
 async def test_client_get_collection(seerr_client: SeerrClient) -> None:
     collection = await seerr_client.get_collection(119)
     assert isinstance(collection, Collection)
-
-
-# Service methods
-
-
-@pytest.mark.asyncio
-async def test_client_get_radarr(seerr_client: SeerrClient) -> None:
-    services = await seerr_client.get_radarr()
-
-    assert isinstance(services, list)
-    for service in services:
-        assert isinstance(service, Radarr)
-
-
-@pytest.mark.asyncio
-async def test_client_get_sonarr(seerr_client: SeerrClient) -> None:
-    services = await seerr_client.get_sonarr()
-
-    assert isinstance(services, list)
-    for service in services:
-        assert isinstance(service, Sonarr)

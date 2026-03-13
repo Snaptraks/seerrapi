@@ -8,7 +8,6 @@ from seerrapi.client import SeerrClient
 from seerrapi.errors import SeerrAuthenticationError
 from seerrapi.movies import Collection, Movie
 from seerrapi.person import Person
-from seerrapi.public import AppData, Status
 from seerrapi.request import Request, RequestCount
 from seerrapi.service import Radarr, Sonarr
 from seerrapi.settings import MainSettings, NetworkSettings
@@ -16,21 +15,6 @@ from seerrapi.tv import TV
 from seerrapi.users import User
 
 from .config import PLEX_AUTH_TOKEN
-
-# Public methods
-
-
-@pytest.mark.asyncio
-async def test_client_get_status(seerr_client: SeerrClient) -> None:
-    status = await seerr_client.get_status()
-    assert isinstance(status, Status)
-
-
-@pytest.mark.asyncio
-async def test_client_get_app_data(seerr_client: SeerrClient) -> None:
-    app_data = await seerr_client.get_app_data()
-    assert isinstance(app_data, AppData)
-
 
 # Settings methods
 

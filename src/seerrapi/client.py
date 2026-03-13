@@ -7,7 +7,7 @@ from .blocklist import BlocklistEndpoints
 from .http import HTTP, APIPath
 from .movies import Collection, Movie
 from .person import Person
-from .public import AppData, Status
+from .public import StatusEndpoints
 from .request import (
     Request,
     RequestCount,
@@ -48,19 +48,10 @@ class SeerrClient:
         self.http = HTTP(host=host, _api_key=api_key)
         self._cookie_auth: str | None = None
 
+        self.status = StatusEndpoints(self)
         self.blocklist = BlocklistEndpoints(self)
         self.search = SearchEndpoints(self)
         self.discover = DiscoverEndpoints(self)
-
-    # Public endpoints
-
-    async def get_status(self) -> Status:
-        return Status.from_data(await self.http.request("GET", APIPath("/status")))
-
-    async def get_app_data(self) -> AppData:
-        return AppData.from_data(
-            await self.http.request("GET", APIPath("/status/appdata"))
-        )
 
     # Settings endpoints
 

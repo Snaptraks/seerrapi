@@ -13,7 +13,7 @@ from .request import (
     RequestCount,
 )
 from .search import DiscoverEndpoints, SearchEndpoints
-from .service import Radarr, Sonarr
+from .service import ServiceEndpoints
 from .settings import MainSettings, NetworkSettings
 from .tv import TV
 from .users import User
@@ -52,6 +52,7 @@ class SeerrClient:
         self.blocklist = BlocklistEndpoints(self)
         self.search = SearchEndpoints(self)
         self.discover = DiscoverEndpoints(self)
+        self.service = ServiceEndpoints(self)
 
     # Settings endpoints
 
@@ -105,9 +106,9 @@ class SeerrClient:
 
     async def request(self, media: Media) -> Request:
         request_data = {
-            "mediaType": media.media_type,
-            "mediaId": media.tvdb_id,
-            "tvdbId": media.tvdb_id,
+            "media_type": media.media_type,
+            "media_id": media.tvdb_id,
+            "tvdb_id": media.tvdb_id,
         }
         if media.media_type == MediaType.TV:
             request_data["seasons"] = media.seasons
@@ -181,16 +182,4 @@ class SeerrClient:
                 APIPath("/collection/{collection_id}", collection_id=collection_id),
                 params={"language": language},
             )
-        )
-
-    # Service endpoints
-
-    async def get_radarr(self) -> list[Radarr]:
-        return Radarr.from_data_list(
-            await self.http.request("GET", APIPath("/service/radarr")), http=self.http
-        )
-
-    async def get_sonarr(self) -> list[Sonarr]:
-        return Sonarr.from_data_list(
-            await self.http.request("GET", APIPath("/service/sonarr")), http=self.http
         )

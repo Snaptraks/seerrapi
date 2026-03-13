@@ -92,12 +92,12 @@ async def seerr_person(seerr_client: SeerrClient) -> Person:
 
 @pytest_asyncio.fixture
 async def seerr_radarr(seerr_client: SeerrClient) -> Radarr:
-    return (await seerr_client.get_radarr())[0]
+    return (await seerr_client.service.radarr())[0]
 
 
 @pytest_asyncio.fixture
 async def seerr_sonarr(seerr_client: SeerrClient) -> Sonarr:
-    return (await seerr_client.get_sonarr())[0]
+    return (await seerr_client.service.sonarr())[0]
 
 
 @pytest.fixture

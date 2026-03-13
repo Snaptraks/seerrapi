@@ -21,7 +21,7 @@ class MediaInfo:
 
 
 def _test_list_of_instances(
-    sequence: list[Any], check_type: type[Any] | tuple[type[Any], ...]
+    sequence: list[Any], check_type: type[Any] | tuple[type[Any], ...],
 ) -> bool:
     assert isinstance(sequence, list)
     if len(sequence) == 0:

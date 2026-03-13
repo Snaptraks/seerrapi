@@ -12,5 +12,5 @@ class CollectionEndpoints(_Endpoints):
                 "GET",
                 APIPath("/collection/{collection_id}", collection_id=collection_id),
                 params={"language": language},
-            )
+            ),
         )

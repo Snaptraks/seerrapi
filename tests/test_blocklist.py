@@ -26,7 +26,7 @@ async def test_blocklist_filter_manual(seerr_client: SeerrClient) -> None:
 @pytest.mark.asyncio
 async def test_blocklist_filter_tags(seerr_client: SeerrClient) -> None:
     blocklist = await seerr_client.blocklist(
-        blocklist_filter=BlocklistFilter.BLOCKLISTED_TAGS
+        blocklist_filter=BlocklistFilter.BLOCKLISTED_TAGS,
     )
 
     for item in blocklist:
@@ -40,7 +40,7 @@ async def test_blocklist_add(seerr_client: SeerrClient, seerr_media: MediaInfo) 
 
 @pytest.mark.asyncio
 async def test_blocklist_details(
-    seerr_client: SeerrClient, seerr_media: MediaInfo
+    seerr_client: SeerrClient, seerr_media: MediaInfo,
 ) -> None:
     # not great, but this test checks the media added
     # in test_blocklist_add, which is run before
@@ -50,7 +50,7 @@ async def test_blocklist_details(
 
 @pytest.mark.asyncio
 async def test_blocklist_remove(
-    seerr_client: SeerrClient, seerr_media: MediaInfo
+    seerr_client: SeerrClient, seerr_media: MediaInfo,
 ) -> None:
     # not great, but this test removes the media added
     # in test_blocklist_add, which is run before

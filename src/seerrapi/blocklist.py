@@ -74,11 +74,11 @@ class BlocklistEndpoints(_Endpoints):
     async def details(self, tmdb_id: int) -> BlocklistItem:
         return BlocklistItem.from_data(
             await self.client.http.request(
-                "GET", APIPath("/blocklist/{tmdb_id}", tmdb_id=tmdb_id)
-            )
+                "GET", APIPath("/blocklist/{tmdb_id}", tmdb_id=tmdb_id),
+            ),
         )
 
     async def remove(self, tmdb_id: int) -> None:
         await self.client.http.request(
-            "DELETE", APIPath("/blocklist/{tmdb_id}", tmdb_id=tmdb_id)
+            "DELETE", APIPath("/blocklist/{tmdb_id}", tmdb_id=tmdb_id),
         )

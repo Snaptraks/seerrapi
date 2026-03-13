@@ -24,7 +24,7 @@ class APIPath:
             {
                 k: _uriquote(v) if isinstance(v, str) else v
                 for k, v in parameters.items()
-            }
+            },
         )
         self._path = f"/api/v1{parsed_path}"
 

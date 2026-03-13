@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Self, TypedDict, Unpack
+from typing import TYPE_CHECKING, TypedDict, Unpack
 
 from pydantic import Field
 

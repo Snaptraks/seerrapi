@@ -17,7 +17,7 @@ _model_config = ConfigDict(
     alias_generator=AliasGenerator(
         validation_alias=to_camel_case,
         serialization_alias=to_camel_case,
-    )
+    ),
 )
 
 
@@ -140,7 +140,7 @@ class Release(Base):
 class SpokenLanguage(Base):
     name: str
     english_name: str = Field(
-        validation_alias=AliasChoices("english_name", "englishName")
+        validation_alias=AliasChoices("english_name", "englishName"),
     )
     iso_639_1: str = Field(alias="iso_639_1")
 

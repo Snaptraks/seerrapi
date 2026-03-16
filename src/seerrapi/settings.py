@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, TypedDict, Unpack
 
 from pydantic import Field
 
-from . import Base, Stateful
+from .base import Base, Stateful
 from .http import APIPath
 
 if TYPE_CHECKING:

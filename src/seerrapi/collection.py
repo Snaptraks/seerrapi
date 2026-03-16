@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from . import _Endpoints
+from .base import _Endpoints
 from .http import APIPath
 from .movies import Collection
 

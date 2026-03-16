@@ -2,7 +2,7 @@ from datetime import date
 
 from pydantic import Field
 
-from . import Credits, Gender, Stateful, _Endpoints
+from .base import Credits, Gender, Stateful, _Endpoints
 from .http import APIPath
 from .movies import Movie
 from .tv import TV

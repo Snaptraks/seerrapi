@@ -35,8 +35,8 @@
 [tool.ruff.lint.flake8-type-checking]
     runtime-evaluated-base-classes = [
         "pydantic.BaseModel",
-        "seerrapi.Base",
-        "seerrapi.Stateful",
+        "seerrapi.base.Base",
+        "seerrapi.base.Stateful",
     ]
 
 [tool.ruff.lint.per-file-ignores]

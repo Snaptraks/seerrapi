@@ -1,6 +1,6 @@
 import pytest
 
-from seerrapi import Genre, Keyword, MediaType, ProductionCompany, WatchlistItem
+from seerrapi.base import Genre, Keyword, MediaType, ProductionCompany, WatchlistItem
 from seerrapi.client import SeerrClient
 from seerrapi.errors import SeerrSearchError
 from seerrapi.languages import Language
@@ -78,7 +78,8 @@ async def test_discover_movies_error_certification_range(
 
 @pytest.mark.asyncio
 async def test_discover_movies_genre(
-    seerr_client: SeerrClient, seerr_genre: Genre,
+    seerr_client: SeerrClient,
+    seerr_genre: Genre,
 ) -> None:
     movies = await seerr_client.discover.movies.genre(seerr_genre)
 
@@ -87,7 +88,8 @@ async def test_discover_movies_genre(
 
 @pytest.mark.asyncio
 async def test_discover_movies_language(
-    seerr_client: SeerrClient, seerr_language: Language,
+    seerr_client: SeerrClient,
+    seerr_language: Language,
 ) -> None:
     movies = await seerr_client.discover.movies.language(seerr_language)
 
@@ -96,7 +98,8 @@ async def test_discover_movies_language(
 
 @pytest.mark.asyncio
 async def test_discover_movies_studio(
-    seerr_client: SeerrClient, seerr_studio: ProductionCompany,
+    seerr_client: SeerrClient,
+    seerr_studio: ProductionCompany,
 ) -> None:
     movies = await seerr_client.discover.movies.studio(seerr_studio)
 
@@ -159,7 +162,8 @@ async def test_discover_tv_genre(seerr_client: SeerrClient, seerr_genre: Genre) 
 
 @pytest.mark.asyncio
 async def test_discover_tv_language(
-    seerr_client: SeerrClient, seerr_language: Language,
+    seerr_client: SeerrClient,
+    seerr_language: Language,
 ) -> None:
     tvs = await seerr_client.discover.tv.language(seerr_language)
 
@@ -168,7 +172,8 @@ async def test_discover_tv_language(
 
 @pytest.mark.asyncio
 async def test_discover_tv_network(
-    seerr_client: SeerrClient, seerr_network: ProductionCompany,
+    seerr_client: SeerrClient,
+    seerr_network: ProductionCompany,
 ) -> None:
     tvs = await seerr_client.discover.tv.network(seerr_network)
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal, Protocol, TypedDict, Unpack
 
-from . import MediaServerType, MediaType
+from .base import MediaServerType, MediaType
 from .blocklist import BlocklistEndpoints
 from .collection import CollectionEndpoints
 from .http import HTTP, APIPath

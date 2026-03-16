@@ -1,6 +1,6 @@
 import pytest
 
-from seerrapi import RottenTomatoesRatings
+from seerrapi.base import RottenTomatoesRatings
 from seerrapi.client import SeerrClient
 from seerrapi.tv import TV, Season, TVRecommendation
 

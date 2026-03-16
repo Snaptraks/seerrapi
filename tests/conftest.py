@@ -1,7 +1,7 @@
 import pytest
 import pytest_asyncio
 
-from seerrapi import Genre, Keyword, MediaType, ProductionCompany
+from seerrapi.base import Genre, Keyword, MediaType, ProductionCompany
 from seerrapi.client import SeerrClient
 from seerrapi.languages import Language
 from seerrapi.movies import Movie

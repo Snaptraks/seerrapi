@@ -5,7 +5,7 @@ from typing import Any
 
 from pydantic import AliasPath, Field, model_validator
 
-from . import (
+from .base import (
     Base,
     Creator,
     Credits,
@@ -131,7 +131,10 @@ class TV(_TVBase):
         )
 
     async def get_recommendations(
-        self, *, page: int = 1, language: str = "en",
+        self,
+        *,
+        page: int = 1,
+        language: str = "en",
     ) -> list[TVRecommendation]:
         resp = await self.http.request(
             "GET",
@@ -141,7 +144,10 @@ class TV(_TVBase):
         return TVRecommendation.from_data_list(resp["results"], http=self.http)
 
     async def get_similar(
-        self, *, page: int = 1, language: str = "en",
+        self,
+        *,
+        page: int = 1,
+        language: str = "en",
     ) -> list[TVRecommendation]:
         resp = await self.http.request(
             "GET",
@@ -154,7 +160,8 @@ class TV(_TVBase):
         # Only Rotten Tomatoes
         return RottenTomatoesRatings.from_data(
             await self.http.request(
-                "GET", APIPath("/tv/{tv_id}/ratings", tv_id=self.id),
+                "GET",
+                APIPath("/tv/{tv_id}/ratings", tv_id=self.id),
             ),
         )
 

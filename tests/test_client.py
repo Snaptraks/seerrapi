@@ -3,7 +3,7 @@ from typing import Literal
 
 import pytest
 
-from seerrapi import MediaType
+from seerrapi.base import MediaType
 from seerrapi.client import SeerrClient
 from seerrapi.errors import SeerrAuthenticationError
 from seerrapi.request import Request, RequestCount

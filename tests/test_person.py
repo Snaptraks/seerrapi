@@ -1,6 +1,6 @@
 import pytest
 
-from seerrapi import Credits
+from seerrapi.base import Credits
 from seerrapi.client import SeerrClient
 from seerrapi.person import Person
 

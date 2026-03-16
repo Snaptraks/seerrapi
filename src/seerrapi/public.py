@@ -1,4 +1,4 @@
-from . import Base, _Endpoints
+from .base import Base, _Endpoints
 from .http import APIPath
 
 

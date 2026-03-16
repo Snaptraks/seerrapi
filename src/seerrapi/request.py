@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Literal, TypedDict, Unpack
 
 from pydantic import Field
 
-from . import Base, MediaType, Stateful
+from .base import Base, MediaType, Stateful
 from .http import APIPath
 from .users import User
 
@@ -149,13 +149,15 @@ class Request(Stateful):
 
     async def delete(self) -> None:
         await self.http.request(
-            "DELETE", APIPath("/request/{request_id}", request_id=self.id),
+            "DELETE",
+            APIPath("/request/{request_id}", request_id=self.id),
         )
 
     async def retry(self) -> Request:
         return Request.from_data(
             await self.http.request(
-                "POST", APIPath("/request/{request_id}/retry", request_id=self.id),
+                "POST",
+                APIPath("/request/{request_id}/retry", request_id=self.id),
             ),
             http=self.http,
         )
@@ -165,7 +167,9 @@ class Request(Stateful):
             await self.http.request(
                 "POST",
                 APIPath(
-                    "/request/{request_id}/{status}", request_id=self.id, status=status,
+                    "/request/{request_id}/{status}",
+                    request_id=self.id,
+                    status=status,
                 ),
             ),
             http=self.http,

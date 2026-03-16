@@ -1,6 +1,6 @@
 import pytest
 
-from seerrapi import IMDBRatings, RottenTomatoesRatings
+from seerrapi.base import IMDBRatings, RottenTomatoesRatings
 from seerrapi.client import SeerrClient
 from seerrapi.movies import Movie, MovieRecommendation
 

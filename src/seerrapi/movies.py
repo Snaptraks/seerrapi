@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pydantic import AliasPath, Field
 
-from . import (
+from .base import (
     Base,
     Credits,
     ExternalIds,
@@ -86,7 +86,10 @@ class Movie(_MovieBase):
     watch_providers: list[WatchProvider]
 
     async def get_recommendations(
-        self, *, page: int = 1, language: str = "en",
+        self,
+        *,
+        page: int = 1,
+        language: str = "en",
     ) -> list[MovieRecommendation]:
         resp = await self.http.request(
             "GET",
@@ -96,7 +99,10 @@ class Movie(_MovieBase):
         return MovieRecommendation.from_data_list(resp["results"], http=self.http)
 
     async def get_similar(
-        self, *, page: int = 1, language: str = "en",
+        self,
+        *,
+        page: int = 1,
+        language: str = "en",
     ) -> list[MovieRecommendation]:
         resp = await self.http.request(
             "GET",
@@ -109,13 +115,15 @@ class Movie(_MovieBase):
         # Only Rotten Tomatoes
         return RottenTomatoesRatings.from_data(
             await self.http.request(
-                "GET", APIPath("/movie/{movie_id}/ratings", movie_id=self.id),
+                "GET",
+                APIPath("/movie/{movie_id}/ratings", movie_id=self.id),
             ),
         )
 
     async def get_ratings_combined(self) -> tuple[RottenTomatoesRatings, IMDBRatings]:
         resp = await self.http.request(
-            "GET", APIPath("/movie/{movie_id}/ratingscombined", movie_id=self.id),
+            "GET",
+            APIPath("/movie/{movie_id}/ratingscombined", movie_id=self.id),
         )
 
         return (

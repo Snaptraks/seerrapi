@@ -87,7 +87,7 @@ def seerr_keyword() -> Keyword:
 
 @pytest_asyncio.fixture
 async def seerr_person(seerr_client: SeerrClient) -> Person:
-    return await seerr_client.get_person(1)
+    return await seerr_client.person(1)
 
 
 @pytest_asyncio.fixture

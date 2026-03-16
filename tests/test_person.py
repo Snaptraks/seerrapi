@@ -1,7 +1,16 @@
 import pytest
 
 from seerrapi import Credits
+from seerrapi.client import SeerrClient
 from seerrapi.person import Person
+
+# Person methods
+
+
+@pytest.mark.asyncio
+async def test_person(seerr_client: SeerrClient) -> None:
+    person = await seerr_client.person(1)
+    assert isinstance(person, Person)
 
 
 @pytest.mark.asyncio

@@ -6,7 +6,6 @@ import pytest
 from seerrapi import MediaType
 from seerrapi.client import SeerrClient
 from seerrapi.errors import SeerrAuthenticationError
-from seerrapi.person import Person
 from seerrapi.request import Request, RequestCount
 from seerrapi.settings import MainSettings, NetworkSettings
 from seerrapi.users import User
@@ -119,12 +118,3 @@ async def test_client_get_requests_count(seerr_client: SeerrClient) -> None:
 async def test_client_get_request_by_id(seerr_client: SeerrClient) -> None:
     request = await seerr_client.get_request(1)
     assert isinstance(request, Request)
-
-
-# Person methods
-
-
-@pytest.mark.asyncio
-async def test_client_get_person(seerr_client: SeerrClient) -> None:
-    person = await seerr_client.get_person(1)
-    assert isinstance(person, Person)

@@ -2,7 +2,7 @@ from datetime import date
 
 from pydantic import Field
 
-from . import Credits, Gender, Stateful
+from . import Credits, Gender, Stateful, _Endpoints
 from .http import APIPath
 from .movies import Movie
 from .tv import TV
@@ -32,4 +32,16 @@ class Person(Stateful):
                 APIPath("/person/{person_id}/combined_credits", person_id=self.id),
                 params={"language": language},
             ),
+        )
+
+
+class PersonEndpoints(_Endpoints):
+    async def __call__(self, person_id: int, *, language: str = "en") -> Person:
+        return Person.from_data(
+            await self.client.http.request(
+                "GET",
+                APIPath("/person/{person_id}", person_id=person_id),
+                params={"language": language},
+            ),
+            http=self.client.http,
         )

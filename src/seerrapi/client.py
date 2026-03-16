@@ -7,7 +7,7 @@ from .blocklist import BlocklistEndpoints
 from .collection import CollectionEndpoints
 from .http import HTTP, APIPath
 from .movies import MovieEndpoints
-from .person import Person
+from .person import PersonEndpoints
 from .public import StatusEndpoints
 from .request import (
     Request,
@@ -55,6 +55,7 @@ class SeerrClient:
         self.discover = DiscoverEndpoints(self)
         self.movie = MovieEndpoints(self)
         self.tv = TVEndpoints(self)
+        self.person = PersonEndpoints(self)
         self.collection = CollectionEndpoints(self)
         self.service = ServiceEndpoints(self)
 
@@ -149,18 +150,6 @@ class SeerrClient:
             await self.http.request(
                 "GET",
                 APIPath(f"/request/{request_id}", request_id=request_id),
-            ),
-            http=self.http,
-        )
-
-    # Person endpoints
-
-    async def get_person(self, person_id: int, *, language: str = "en") -> Person:
-        return Person.from_data(
-            await self.http.request(
-                "GET",
-                APIPath("/person/{person_id}", person_id=person_id),
-                params={"language": language},
             ),
             http=self.http,
         )

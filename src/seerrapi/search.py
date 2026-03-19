@@ -7,13 +7,13 @@ from pydantic import Field
 
 from .base import (
     Base,
+    Endpoints,
     Genre,
     Keyword,
     MediaType,
     ProductionCompany,
     WatchlistItem,
     WatchProviderDetails,
-    _Endpoints,
 )
 from .errors import SeerrSearchError
 from .http import APIPath
@@ -101,7 +101,7 @@ class GenreSlider(Genre):
     backdrops: list[str]
 
 
-class SearchEndpoints(_Endpoints):
+class SearchEndpoints(Endpoints):
     async def __call__(
         self,
         query: str,
@@ -135,7 +135,7 @@ class SearchEndpoints(_Endpoints):
         return ProductionCompany.from_data_list(resp["results"])
 
 
-class DiscoverMovies(_Endpoints):
+class DiscoverMovies(Endpoints):
     async def __call__(  # noqa: C901, PLR0912, PLR0913
         self,
         *,
@@ -299,7 +299,7 @@ class DiscoverMovies(_Endpoints):
         return MovieResult.from_data_list(resp["results"])
 
 
-class DiscoverTV(_Endpoints):
+class DiscoverTV(Endpoints):
     async def __call__(  # noqa: C901, PLR0912, PLR0913, PLR0915
         self,
         *,
@@ -461,7 +461,7 @@ class DiscoverTV(_Endpoints):
         return TVResult.from_data_list(resp["results"])
 
 
-class DiscoverEndpoints(_Endpoints):
+class DiscoverEndpoints(Endpoints):
     def __init__(self, client: SeerrClient) -> None:
         super().__init__(client)
         self.movies = DiscoverMovies(client)

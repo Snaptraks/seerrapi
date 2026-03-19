@@ -5,6 +5,7 @@ from pydantic import AliasPath, Field
 from .base import (
     Base,
     Credits,
+    Endpoints,
     ExternalIds,
     Genre,
     IMDBRatings,
@@ -18,7 +19,6 @@ from .base import (
     SpokenLanguage,
     Stateful,
     WatchProvider,
-    _Endpoints,
 )
 from .http import APIPath
 from .request import MediaInfo
@@ -132,7 +132,7 @@ class Movie(_MovieBase):
         )
 
 
-class MovieEndpoints(_Endpoints):
+class MovieEndpoints(Endpoints):
     async def __call__(self, movie_id: int, *, language: str = "en") -> Movie:
         return Movie.from_data(
             await self.client.http.request(

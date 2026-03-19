@@ -4,7 +4,7 @@ from datetime import datetime
 from enum import StrEnum
 from typing import TYPE_CHECKING, Any, Protocol
 
-from .base import Base, MediaType, _Endpoints
+from .base import Base, Endpoints, MediaType
 from .http import APIPath
 from .users import User
 
@@ -32,7 +32,7 @@ class BlocklistFilter(StrEnum):
     BLOCKLISTED_TAGS = "blocklistedTags"
 
 
-class BlocklistEndpoints(_Endpoints):
+class BlocklistEndpoints(Endpoints):
     async def __call__(
         self,
         take: int = 25,

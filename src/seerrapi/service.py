@@ -1,4 +1,4 @@
-from .base import Base, Stateful, _Endpoints
+from .base import Base, Endpoints, Stateful
 from .http import APIPath
 
 
@@ -55,7 +55,7 @@ class Sonarr(Service):
         return ServiceRootFolder.from_data_list(resp["rootFolders"])
 
 
-class ServiceEndpoints(_Endpoints):
+class ServiceEndpoints(Endpoints):
     async def radarr(self) -> list[Radarr]:
         return Radarr.from_data_list(
             await self.client.http.request("GET", APIPath("/service/radarr")),

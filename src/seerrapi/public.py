@@ -1,4 +1,4 @@
-from .base import Base, _Endpoints
+from .base import Base, Endpoints
 from .http import APIPath
 
 
@@ -16,7 +16,7 @@ class AppData(Base):
     app_data_permissions: bool
 
 
-class StatusEndpoints(_Endpoints):
+class StatusEndpoints(Endpoints):
     async def __call__(self) -> Status:
         return Status.from_data(
             await self.client.http.request("GET", APIPath("/status")),

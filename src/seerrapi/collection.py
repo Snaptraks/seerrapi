@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from .base import _Endpoints
+from .base import Endpoints
 from .http import APIPath
 from .movies import Collection
 
 
-class CollectionEndpoints(_Endpoints):
+class CollectionEndpoints(Endpoints):
     async def __call__(self, collection_id: int, *, language: str = "en") -> Collection:
         return Collection.from_data(
             await self.client.http.request(

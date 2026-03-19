@@ -9,6 +9,7 @@ from .base import (
     Base,
     Creator,
     Credits,
+    Endpoints,
     ExternalIds,
     Genre,
     Keyword,
@@ -19,7 +20,6 @@ from .base import (
     SpokenLanguage,
     Stateful,
     WatchProvider,
-    _Endpoints,
 )
 from .http import APIPath
 from .request import _MediaInfoBase
@@ -166,7 +166,7 @@ class TV(_TVBase):
         )
 
 
-class TVEndpoints(_Endpoints):
+class TVEndpoints(Endpoints):
     async def __call__(self, tv_id: int, *, language: str = "en") -> TV:
         return TV.from_data(
             await self.client.http.request(

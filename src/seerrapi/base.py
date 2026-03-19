@@ -21,7 +21,7 @@ _model_config = ConfigDict(
 )
 
 
-class _Endpoints:
+class Endpoints:
     def __init__(self, client: SeerrClient) -> None:
         self.client = client
 

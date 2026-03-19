@@ -32,7 +32,7 @@ async def seerr_settings(seerr_client: SeerrClient) -> MainSettings:
 
 @pytest_asyncio.fixture
 async def seerr_request(seerr_client: SeerrClient) -> Request:
-    return await seerr_client.get_request(1)
+    return await seerr_client.request.get_request(1)
 
 
 @pytest_asyncio.fixture

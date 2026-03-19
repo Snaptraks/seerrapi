@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import IntEnum
-from typing import TYPE_CHECKING, Literal, TypedDict, Unpack
+from typing import TYPE_CHECKING, Any, Literal, Protocol, TypedDict, Unpack
 
 from pydantic import Field
 
-from .base import Base, MediaType, Stateful
+from .base import Base, Endpoints, MediaType, Stateful
 from .http import APIPath
 from .users import User
 
@@ -186,3 +186,77 @@ class RequestCount(Base):
     processing: int
     available: int
     completed: int
+
+
+class RequestParams(TypedDict, total=False):
+    take: int
+    skip: int
+    filter_: RequestFilter | None
+    sort: RequestSort | None
+    sort_direction: RequestSortDirection | None
+    requested_by: int | None
+    media_type: RequestMediaType | None
+
+
+class Media(Protocol):
+    tvdb_id: int
+    media_type: MediaType
+    seasons: list[int] | Literal["all"]
+
+
+class RequestEndpoints(Endpoints):
+    async def __call__(self, media: Media) -> Request:
+        request_data = {
+            "media_type": media.media_type,
+            "media_id": media.tvdb_id,
+            "tvdb_id": media.tvdb_id,
+        }
+        if media.media_type == MediaType.TV:
+            request_data["seasons"] = media.seasons
+        return Request.from_data(
+            await self.client.http.request(
+                "POST", APIPath("/request"), payload=request_data
+            ),
+            http=self.client.http,
+        )
+
+    async def get_requests(  # noqa: PLR0913
+        self,
+        *,
+        take: int = 20,
+        skip: int = 0,
+        filter_: RequestFilter | None = None,
+        sort: RequestSort | None = None,
+        sort_direction: RequestSortDirection | None = None,
+        requested_by: int | None = None,
+        media_type: RequestMediaType | None = None,
+    ) -> list[Request]:
+        params: dict[str, Any] = {"take": take, "skip": skip}
+        if filter_:
+            params["filter"] = filter_
+        if sort:
+            params["sort"] = sort
+        if sort_direction:
+            params["sort_direction"] = sort_direction
+        if requested_by:
+            params["requested_by"] = requested_by
+        if media_type:
+            params["media_type"] = media_type
+
+        resp = await self.client.http.request("GET", APIPath("/request"), params=params)  # pyright: ignore[reportArgumentType]
+
+        return Request.from_data_list(resp["results"], http=self.client.http)
+
+    async def get_requests_count(self) -> RequestCount:
+        return RequestCount.from_data(
+            await self.client.http.request("GET", APIPath("/request/count")),
+        )
+
+    async def get_request(self, request_id: int) -> Request:
+        return Request.from_data(
+            await self.client.http.request(
+                "GET",
+                APIPath(f"/request/{request_id}", request_id=request_id),
+            ),
+            http=self.client.http,
+        )

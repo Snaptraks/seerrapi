@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Literal, Protocol, TypedDict, Unpack
 
-from .base import MediaServerType, MediaType
+from .auth import AuthEndpoints
+from .base import MediaType
 from .blocklist import BlocklistEndpoints
 from .collection import CollectionEndpoints
 from .http import HTTP, APIPath
@@ -17,7 +18,6 @@ from .search import DiscoverEndpoints, SearchEndpoints
 from .service import ServiceEndpoints
 from .settings import MainSettings, NetworkSettings
 from .tv import TVEndpoints
-from .users import User
 
 if TYPE_CHECKING:
     from .request import (
@@ -26,6 +26,7 @@ if TYPE_CHECKING:
         RequestSort,
         RequestSortDirection,
     )
+    from .users import User
 
     class RequestParams(TypedDict, total=False):
         take: int
@@ -50,6 +51,7 @@ class SeerrClient:
         self._cookie_auth: str | None = None
 
         self.status = StatusEndpoints(self)
+        self.auth = AuthEndpoints(self)
         self.blocklist = BlocklistEndpoints(self)
         self.search = SearchEndpoints(self)
         self.discover = DiscoverEndpoints(self)
@@ -58,6 +60,13 @@ class SeerrClient:
         self.person = PersonEndpoints(self)
         self.collection = CollectionEndpoints(self)
         self.service = ServiceEndpoints(self)
+
+    # shortcut methods
+    async def me(self) -> User:
+        return await self.auth.me()
+
+    async def logout(self) -> None:
+        await self.auth.logout()
 
     # Settings endpoints
 
@@ -72,53 +81,6 @@ class SeerrClient:
             await self.http.request("GET", APIPath("/settings/network")),
             http=self.http,
         )
-
-    # Auth endpoints
-
-    async def me(self) -> User:
-        return User.from_data(await self.http.request("GET", APIPath("/auth/me")))
-
-    async def auth_plex(self, auth_token: str) -> None:
-        resp = await self.http._raw_request(
-            "POST",
-            APIPath("/auth/plex"),
-            payload={"auth_token": auth_token},
-        )
-        self.http._cookie_auth = resp.cookies["connect.sid"]
-
-    async def auth_jellyfin(
-        self,
-        *,
-        username: str,
-        password: str,
-        hostname: str,
-        email: str,
-    ) -> None:
-        payload = {
-            "username": username,
-            "password": password,
-            "hostname": hostname,
-            "email": email,
-            "server_type": MediaServerType.JELLYFIN,
-        }
-        resp = await self.http._raw_request(
-            "POST",
-            APIPath("/auth/jellyfin"),
-            payload=payload,
-        )
-        self.http._cookie_auth = resp.cookies["connect.sid"]
-
-    async def auth_local(self, *, email: str, password: str) -> None:
-        payload = {"email": email, "password": password}
-        resp = await self.http._raw_request(
-            "POST",
-            APIPath("/auth/local"),
-            payload=payload,
-        )
-        self.http._cookie_auth = resp.cookies["connect.sid"]
-
-    async def logout(self) -> None:
-        await self.http._raw_request("POST", APIPath("/auth/logout"))
 
     # Requests endpoints
 

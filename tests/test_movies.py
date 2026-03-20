@@ -7,7 +7,7 @@ from seerrapi.movies import Movie, MovieRecommendation
 
 @pytest.mark.asyncio
 async def test_movie(seerr_client: SeerrClient) -> None:
-    movie = await seerr_client.movie(105)
+    movie = await seerr_client.movie.get(105)
     assert isinstance(movie, Movie)
 
 

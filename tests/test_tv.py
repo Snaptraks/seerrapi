@@ -9,7 +9,7 @@ from seerrapi.tv import TV, Season, TVRecommendation
 
 @pytest.mark.asyncio
 async def test_tv(seerr_client: SeerrClient) -> None:
-    tv = await seerr_client.tv(96580)
+    tv = await seerr_client.tv.get(96580)
     assert isinstance(tv, TV)
 
 

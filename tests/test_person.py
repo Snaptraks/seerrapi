@@ -9,7 +9,7 @@ from seerrapi.person import Person
 
 @pytest.mark.asyncio
 async def test_person(seerr_client: SeerrClient) -> None:
-    person = await seerr_client.person(1)
+    person = await seerr_client.person.get(1)
     assert isinstance(person, Person)
 
 

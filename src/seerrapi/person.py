@@ -36,7 +36,7 @@ class Person(Stateful):
 
 
 class PersonEndpoints(Endpoints):
-    async def __call__(self, person_id: int, *, language: str = "en") -> Person:
+    async def get(self, person_id: int, *, language: str = "en") -> Person:
         return Person.from_data(
             await self.client.http.request(
                 "GET",

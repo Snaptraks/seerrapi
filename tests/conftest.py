@@ -37,12 +37,12 @@ async def seerr_request(seerr_client: SeerrClient) -> Request:
 
 @pytest_asyncio.fixture
 async def seerr_movie(seerr_client: SeerrClient) -> Movie:
-    return await seerr_client.movie(105)
+    return await seerr_client.movie.get(105)
 
 
 @pytest_asyncio.fixture
 async def seerr_tv(seerr_client: SeerrClient) -> TV:
-    return await seerr_client.tv(96580)
+    return await seerr_client.tv.get(96580)
 
 
 @pytest.fixture
@@ -87,7 +87,7 @@ def seerr_keyword() -> Keyword:
 
 @pytest_asyncio.fixture
 async def seerr_person(seerr_client: SeerrClient) -> Person:
-    return await seerr_client.person(1)
+    return await seerr_client.person.get(1)
 
 
 @pytest_asyncio.fixture

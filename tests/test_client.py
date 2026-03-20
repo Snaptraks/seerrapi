@@ -24,7 +24,7 @@ async def test_client_get_network_settings(seerr_client: SeerrClient) -> None:
 
 @pytest.mark.asyncio
 async def test_client_search_movie_and_request(seerr_client: SeerrClient) -> None:
-    results = await seerr_client.search("Back to the Future")
+    results = await seerr_client.search.search("Back to the Future")
 
     bttf_movie = next(r for r in results if r.media_type == MediaType.MOVIE)
 
@@ -42,7 +42,7 @@ async def test_client_search_movie_and_request(seerr_client: SeerrClient) -> Non
 async def test_client_search_movie_and_request_with_seasons_warns(
     seerr_client: SeerrClient,
 ) -> None:
-    results = await seerr_client.search("Back to the Future")
+    results = await seerr_client.search.search("Back to the Future")
 
     bttf_movie = next(r for r in results if r.media_type == MediaType.MOVIE)
 
@@ -59,7 +59,7 @@ async def test_client_search_movie_and_request_with_seasons_warns(
 
 @pytest.mark.asyncio
 async def test_client_search_tv_and_request(seerr_client: SeerrClient) -> None:
-    results = await seerr_client.search("Back to the Future")
+    results = await seerr_client.search.search("Back to the Future")
 
     bttf_tv = next(r for r in results if r.media_type == MediaType.TV)
 

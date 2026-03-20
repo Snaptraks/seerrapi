@@ -167,7 +167,7 @@ class TV(_TVBase):
 
 
 class TVEndpoints(Endpoints):
-    async def __call__(self, tv_id: int, *, language: str = "en") -> TV:
+    async def get(self, tv_id: int, *, language: str = "en") -> TV:
         return TV.from_data(
             await self.client.http.request(
                 "GET",

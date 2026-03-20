@@ -17,7 +17,7 @@ from . import _test_list_of_instances
 
 @pytest.mark.asyncio
 async def test_search(seerr_client: SeerrClient) -> None:
-    results = await seerr_client.search("Bob Ross")
+    results = await seerr_client.search.search("Bob Ross")
 
     assert _test_list_of_instances(results, (MovieResult, TVResult, PersonResult))
 
@@ -38,7 +38,7 @@ async def test_search_company(seerr_client: SeerrClient) -> None:
 
 @pytest.mark.asyncio
 async def test_discover_movies(seerr_client: SeerrClient) -> None:
-    movies = await seerr_client.discover.movies()
+    movies = await seerr_client.discover.movies.list()
 
     assert _test_list_of_instances(movies, MovieResult)
 
@@ -48,7 +48,7 @@ async def test_discover_movies_error_certification_exact_gte(
     seerr_client: SeerrClient,
 ) -> None:
     with pytest.raises(SeerrSearchError):
-        await seerr_client.discover.movies(
+        await seerr_client.discover.movies.list(
             certification_mode=CertificationMode.EXACT,
             certification_gte="PG-13",
         )
@@ -59,7 +59,7 @@ async def test_discover_movies_error_certification_exact_lte(
     seerr_client: SeerrClient,
 ) -> None:
     with pytest.raises(SeerrSearchError):
-        await seerr_client.discover.movies(
+        await seerr_client.discover.movies.list(
             certification_mode=CertificationMode.EXACT,
             certification_lte="PG-13",
         )
@@ -70,7 +70,7 @@ async def test_discover_movies_error_certification_range(
     seerr_client: SeerrClient,
 ) -> None:
     with pytest.raises(SeerrSearchError):
-        await seerr_client.discover.movies(
+        await seerr_client.discover.movies.list(
             certification_mode=CertificationMode.RANGE,
             certification="PG-13",
         )
@@ -115,7 +115,7 @@ async def test_discover_movies_upcoming(seerr_client: SeerrClient) -> None:
 
 @pytest.mark.asyncio
 async def test_discover_tv(seerr_client: SeerrClient) -> None:
-    tvs = await seerr_client.discover.tv()
+    tvs = await seerr_client.discover.tv.list()
 
     assert _test_list_of_instances(tvs, TVResult)
 
@@ -125,7 +125,7 @@ async def test_discover_tv_error_certification_exact_gte(
     seerr_client: SeerrClient,
 ) -> None:
     with pytest.raises(SeerrSearchError):
-        await seerr_client.discover.tv(
+        await seerr_client.discover.tv.list(
             certification_mode=CertificationMode.EXACT,
             certification_gte="PG-13",
         )
@@ -136,7 +136,7 @@ async def test_discover_tv_error_certification_exact_lte(
     seerr_client: SeerrClient,
 ) -> None:
     with pytest.raises(SeerrSearchError):
-        await seerr_client.discover.tv(
+        await seerr_client.discover.tv.list(
             certification_mode=CertificationMode.EXACT,
             certification_lte="PG-13",
         )
@@ -147,7 +147,7 @@ async def test_discover_tv_error_certification_range(
     seerr_client: SeerrClient,
 ) -> None:
     with pytest.raises(SeerrSearchError):
-        await seerr_client.discover.tv(
+        await seerr_client.discover.tv.list(
             certification_mode=CertificationMode.RANGE,
             certification="PG-13",
         )

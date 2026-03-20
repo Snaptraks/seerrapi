@@ -133,7 +133,7 @@ class Movie(_MovieBase):
 
 
 class MovieEndpoints(Endpoints):
-    async def __call__(self, movie_id: int, *, language: str = "en") -> Movie:
+    async def get(self, movie_id: int, *, language: str = "en") -> Movie:
         return Movie.from_data(
             await self.client.http.request(
                 "GET",

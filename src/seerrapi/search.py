@@ -102,7 +102,7 @@ class GenreSlider(Genre):
 
 
 class SearchEndpoints(Endpoints):
-    async def __call__(
+    async def search(
         self,
         query: str,
         *,
@@ -136,7 +136,7 @@ class SearchEndpoints(Endpoints):
 
 
 class DiscoverMovies(Endpoints):
-    async def __call__(  # noqa: C901, PLR0912, PLR0913
+    async def list(  # noqa: C901, PLR0912, PLR0913
         self,
         *,
         page: int = 1,
@@ -300,7 +300,7 @@ class DiscoverMovies(Endpoints):
 
 
 class DiscoverTV(Endpoints):
-    async def __call__(  # noqa: C901, PLR0912, PLR0913, PLR0915
+    async def list(  # noqa: C901, PLR0912, PLR0913, PLR0915
         self,
         *,
         page: int = 1,

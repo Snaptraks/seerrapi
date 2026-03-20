@@ -8,7 +8,7 @@ from . import MediaInfo
 
 @pytest.mark.asyncio
 async def test_blocklist(seerr_client: SeerrClient) -> None:
-    blocklist = await seerr_client.blocklist()
+    blocklist = await seerr_client.blocklist.list()
 
     assert isinstance(blocklist, list)
     for item in blocklist:
@@ -17,7 +17,9 @@ async def test_blocklist(seerr_client: SeerrClient) -> None:
 
 @pytest.mark.asyncio
 async def test_blocklist_filter_manual(seerr_client: SeerrClient) -> None:
-    blocklist = await seerr_client.blocklist(blocklist_filter=BlocklistFilter.MANUAL)
+    blocklist = await seerr_client.blocklist.list(
+        blocklist_filter=BlocklistFilter.MANUAL
+    )
 
     for item in blocklist:
         assert item.user is not None
@@ -25,7 +27,7 @@ async def test_blocklist_filter_manual(seerr_client: SeerrClient) -> None:
 
 @pytest.mark.asyncio
 async def test_blocklist_filter_tags(seerr_client: SeerrClient) -> None:
-    blocklist = await seerr_client.blocklist(
+    blocklist = await seerr_client.blocklist.list(
         blocklist_filter=BlocklistFilter.BLOCKLISTED_TAGS,
     )
 
@@ -40,7 +42,8 @@ async def test_blocklist_add(seerr_client: SeerrClient, seerr_media: MediaInfo) 
 
 @pytest.mark.asyncio
 async def test_blocklist_details(
-    seerr_client: SeerrClient, seerr_media: MediaInfo,
+    seerr_client: SeerrClient,
+    seerr_media: MediaInfo,
 ) -> None:
     # not great, but this test checks the media added
     # in test_blocklist_add, which is run before
@@ -50,7 +53,8 @@ async def test_blocklist_details(
 
 @pytest.mark.asyncio
 async def test_blocklist_remove(
-    seerr_client: SeerrClient, seerr_media: MediaInfo,
+    seerr_client: SeerrClient,
+    seerr_media: MediaInfo,
 ) -> None:
     # not great, but this test removes the media added
     # in test_blocklist_add, which is run before

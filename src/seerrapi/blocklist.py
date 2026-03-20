@@ -33,7 +33,7 @@ class BlocklistFilter(StrEnum):
 
 
 class BlocklistEndpoints(Endpoints):
-    async def __call__(
+    async def list(
         self,
         take: int = 25,
         skip: int = 0,

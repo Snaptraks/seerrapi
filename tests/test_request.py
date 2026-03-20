@@ -10,7 +10,7 @@ from seerrapi.request import Request, RequestCount, RequestStatus
 
 @pytest.mark.asyncio
 async def test_client_get_requests(seerr_client: SeerrClient) -> None:
-    requests = await seerr_client.request.get_requests()
+    requests = await seerr_client.request.list()
     assert isinstance(requests, list)
     for request in requests:
         assert isinstance(request, Request)
@@ -22,29 +22,29 @@ async def test_client_post_request(seerr_client: SeerrClient) -> None:
     @dataclass
     class Media:
         media_type: MediaType
-        tvdb_id: int
+        id: int
         seasons: list[int] | Literal["all"]
 
     media = Media(
         media_type=MediaType.TV,
-        tvdb_id=456,
+        id=456,
         seasons=[1, 2, 3],
     )
 
-    request = await seerr_client.request(media)
+    request = await seerr_client.request.create(media, seasons=media.seasons)
 
     assert isinstance(request, Request)
 
 
 @pytest.mark.asyncio
 async def test_client_get_requests_count(seerr_client: SeerrClient) -> None:
-    requests_count = await seerr_client.request.get_requests_count()
+    requests_count = await seerr_client.request.count()
     assert isinstance(requests_count, RequestCount)
 
 
 @pytest.mark.asyncio
 async def test_client_get_request_by_id(seerr_client: SeerrClient) -> None:
-    request = await seerr_client.request.get_request(1)
+    request = await seerr_client.request.get(1)
     assert isinstance(request, Request)
 
 

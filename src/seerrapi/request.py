@@ -2,7 +2,11 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import IntEnum
-from typing import TYPE_CHECKING, Any, Literal, Protocol, TypedDict, Unpack
+from typing import (
+    TYPE_CHECKING,
+    Literal,
+)
+from warnings import warn
 
 from pydantic import Field
 
@@ -11,6 +15,8 @@ from .http import APIPath
 from .users import User
 
 if TYPE_CHECKING:
+    from typing import Any, Protocol
+
     type RequestFilter = Literal[
         "all",
         "approved",
@@ -26,16 +32,9 @@ if TYPE_CHECKING:
     type RequestSortDirection = Literal["asc", "desc"]
     type RequestMediaType = MediaType | Literal["all"]
 
-    class RequestUpdateDict(TypedDict, total=False):
-        media_type: MediaType
-        seasons: list[int]
-        is4k: bool
-        server_id: int | None
-        profile_id: int | None
-        root_folder: str | None
-        language_profile_id: int
-        user_id: int
-        tags: list[str] | None
+    class Requestable[T](Protocol):
+        id: int
+        media_type: T
 
 
 # Media objects
@@ -121,15 +120,27 @@ class Request(Stateful):
     tags: list[str] | None
     is_auto_request: bool
     media: MediaInfo
-    seasons: list[Season]
+    seasons: list[Season] = Field(default_factory=list)
     modified_by: User
     requested_by: User
     season_count: int | None = None
     profile_name: str | None = None
     can_remove: bool | None = None
 
-    async def update(self, **payload: Unpack[RequestUpdateDict]) -> Request:
-        self_payload: RequestUpdateDict = {
+    async def update(  # noqa: PLR0913
+        self,
+        *,
+        media_type: MediaType | None = None,
+        seasons: list[int] | None = None,
+        is_4k: bool | None = None,
+        server_id: int | None = None,
+        profile_id: int | None = None,
+        root_folder: str | None = None,
+        language_profile_id: int | None = None,
+        user_id: int | None = None,
+        tags: list[str] | None = None,
+    ) -> Request:
+        self_payload: dict[str, Any] = {
             "media_type": self.type,
             "language_profile_id": self.language_profile_id or 0,
             "profile_id": self.profile_id or 0,
@@ -137,12 +148,31 @@ class Request(Stateful):
             "server_id": self.server_id or 0,
             "tags": self.tags,
         }
+        payload: dict[str, Any] = {}
+        if media_type is not None:
+            payload["media_type"] = media_type
+        if seasons is not None:
+            payload["seasons"] = seasons
+        if is_4k is not None:
+            payload["is_4k"] = is_4k
+        if server_id is not None:
+            payload["server_id"] = server_id
+        if profile_id is not None:
+            payload["profile_id"] = profile_id
+        if root_folder is not None:
+            payload["root_folder"] = root_folder
+        if language_profile_id is not None:
+            payload["language_profile_id"] = language_profile_id
+        if user_id is not None:
+            payload["user_id"] = user_id
+        if tags is not None:
+            payload["tags"] = tags
 
         return Request.from_data(
             await self.http.request(
                 "PUT",
                 APIPath("/request/{request_id}", request_id=self.id),
-                payload=self_payload | payload,  # pyright: ignore[reportArgumentType]
+                payload=self_payload | payload,
             ),
             http=self.http,
         )
@@ -188,31 +218,18 @@ class RequestCount(Base):
     completed: int
 
 
-class RequestParams(TypedDict, total=False):
-    take: int
-    skip: int
-    filter_: RequestFilter | None
-    sort: RequestSort | None
-    sort_direction: RequestSortDirection | None
-    requested_by: int | None
-    media_type: RequestMediaType | None
-
-
-class Media(Protocol):
-    tvdb_id: int
-    media_type: MediaType
-    seasons: list[int] | Literal["all"]
-
-
 class RequestEndpoints(Endpoints):
-    async def __call__(self, media: Media) -> Request:
+    async def create(
+        self, media: Requestable, *, seasons: list[int] | Literal["all"] | None = None
+    ) -> Request:
         request_data = {
             "media_type": media.media_type,
-            "media_id": media.tvdb_id,
-            "tvdb_id": media.tvdb_id,
+            "media_id": media.id,
         }
         if media.media_type == MediaType.TV:
-            request_data["seasons"] = media.seasons
+            request_data["seasons"] = seasons
+        if media.media_type == MediaType.MOVIE and seasons is not None:
+            warn("Requested a Movie with Seasons data, ignoring seasons.", stacklevel=2)
         return Request.from_data(
             await self.client.http.request(
                 "POST", APIPath("/request"), payload=request_data
@@ -220,7 +237,7 @@ class RequestEndpoints(Endpoints):
             http=self.client.http,
         )
 
-    async def get_requests(  # noqa: PLR0913
+    async def list(  # noqa: PLR0913
         self,
         *,
         take: int = 20,
@@ -247,12 +264,12 @@ class RequestEndpoints(Endpoints):
 
         return Request.from_data_list(resp["results"], http=self.client.http)
 
-    async def get_requests_count(self) -> RequestCount:
+    async def count(self) -> RequestCount:
         return RequestCount.from_data(
             await self.client.http.request("GET", APIPath("/request/count")),
         )
 
-    async def get_request(self, request_id: int) -> Request:
+    async def get(self, request_id: int) -> Request:
         return Request.from_data(
             await self.client.http.request(
                 "GET",

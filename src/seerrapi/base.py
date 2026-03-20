@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import IntEnum, StrEnum
-from typing import TYPE_CHECKING, Any, Self
+from typing import TYPE_CHECKING, Any, Protocol, Self
 
 from pydantic import AliasChoices, AliasGenerator, BaseModel, ConfigDict, Field
 
@@ -11,6 +11,10 @@ from .utils import to_camel_case
 if TYPE_CHECKING:
     from .client import SeerrClient
     from .http import HTTP
+
+    class Requestable[T](Protocol):
+        id: int
+        media_type: T
 
 
 _model_config = ConfigDict(
@@ -238,11 +242,3 @@ class Creator(Base):
     original_name: str = Field(alias="original_name")
     gender: int
     profile_path: str | None = Field(default=None, alias="profile_path")
-
-
-class WatchlistItem(Base):
-    id: int
-    media_type: MediaType
-    rating_key: str
-    title: str
-    tmdb_id: int

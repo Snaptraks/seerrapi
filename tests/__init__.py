@@ -19,8 +19,11 @@ class MediaInfo:
     media_type: MediaType
     user: int
 
+    def __post_init__(self) -> None:
+        self.id = self.tmdb_id
 
-def _test_list_of_instances(
+
+def assert_list_of_instances(
     sequence: list[Any],
     check_type: type[Any] | tuple[type[Any], ...],
 ) -> bool:

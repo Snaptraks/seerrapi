@@ -12,13 +12,13 @@ from .base import (
     Keyword,
     MediaType,
     ProductionCompany,
-    WatchlistItem,
     WatchProviderDetails,
 )
 from .errors import SeerrSearchError
 from .http import APIPath
 from .request import MediaInfo
 from .utils import DateOrEmptyStr
+from .watchlist import WatchlistItem
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -507,4 +507,4 @@ class DiscoverEndpoints(Endpoints):
             params=params,
         )
 
-        return WatchlistItem.from_data_list(resp["results"])
+        return WatchlistItem.from_data_list(resp["results"], http=self.client.http)

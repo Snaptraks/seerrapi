@@ -15,7 +15,9 @@ from .http import APIPath
 from .users import User
 
 if TYPE_CHECKING:
-    from typing import Any, Protocol
+    from typing import Any
+
+    from .base import Requestable
 
     type RequestFilter = Literal[
         "all",
@@ -31,11 +33,6 @@ if TYPE_CHECKING:
     type RequestSort = Literal["added", "modified"]
     type RequestSortDirection = Literal["asc", "desc"]
     type RequestMediaType = MediaType | Literal["all"]
-
-    class Requestable[T](Protocol):
-        id: int
-        media_type: T
-
 
 # Media objects
 

@@ -16,6 +16,7 @@ from .search import DiscoverEndpoints, SearchEndpoints
 from .service import ServiceEndpoints
 from .settings import MainSettings, NetworkSettings
 from .tv import TVEndpoints
+from .watchlist import WatchlistEndpoints
 
 if TYPE_CHECKING:
     from .users import User
@@ -38,6 +39,7 @@ class SeerrClient:
         self.person = PersonEndpoints(self)
         self.collection = CollectionEndpoints(self)
         self.service = ServiceEndpoints(self)
+        self.watchlist = WatchlistEndpoints(self)
 
     # shortcut methods
     async def me(self) -> User:

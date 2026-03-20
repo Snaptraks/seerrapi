@@ -1,6 +1,6 @@
 import pytest
 
-from seerrapi.base import Genre, Keyword, MediaType, ProductionCompany, WatchlistItem
+from seerrapi.base import Genre, Keyword, MediaType, ProductionCompany
 from seerrapi.client import SeerrClient
 from seerrapi.errors import SeerrSearchError
 from seerrapi.languages import Language
@@ -11,36 +11,37 @@ from seerrapi.search import (
     PersonResult,
     TVResult,
 )
+from seerrapi.watchlist import WatchlistItem
 
-from . import _test_list_of_instances
+from . import assert_list_of_instances
 
 
 @pytest.mark.asyncio
 async def test_search(seerr_client: SeerrClient) -> None:
     results = await seerr_client.search.search("Bob Ross")
 
-    assert _test_list_of_instances(results, (MovieResult, TVResult, PersonResult))
+    assert assert_list_of_instances(results, (MovieResult, TVResult, PersonResult))
 
 
 @pytest.mark.asyncio
 async def test_search_keyword(seerr_client: SeerrClient) -> None:
     keywords = await seerr_client.search.keyword("painting")
 
-    assert _test_list_of_instances(keywords, Keyword)
+    assert assert_list_of_instances(keywords, Keyword)
 
 
 @pytest.mark.asyncio
 async def test_search_company(seerr_client: SeerrClient) -> None:
     companies = await seerr_client.search.company("disney")
 
-    assert _test_list_of_instances(companies, ProductionCompany)
+    assert assert_list_of_instances(companies, ProductionCompany)
 
 
 @pytest.mark.asyncio
 async def test_discover_movies(seerr_client: SeerrClient) -> None:
     movies = await seerr_client.discover.movies.list()
 
-    assert _test_list_of_instances(movies, MovieResult)
+    assert assert_list_of_instances(movies, MovieResult)
 
 
 @pytest.mark.asyncio
@@ -83,7 +84,7 @@ async def test_discover_movies_genre(
 ) -> None:
     movies = await seerr_client.discover.movies.genre(seerr_genre)
 
-    assert _test_list_of_instances(movies, MovieResult)
+    assert assert_list_of_instances(movies, MovieResult)
 
 
 @pytest.mark.asyncio
@@ -93,7 +94,7 @@ async def test_discover_movies_language(
 ) -> None:
     movies = await seerr_client.discover.movies.language(seerr_language)
 
-    assert _test_list_of_instances(movies, MovieResult)
+    assert assert_list_of_instances(movies, MovieResult)
 
 
 @pytest.mark.asyncio
@@ -103,21 +104,21 @@ async def test_discover_movies_studio(
 ) -> None:
     movies = await seerr_client.discover.movies.studio(seerr_studio)
 
-    assert _test_list_of_instances(movies, MovieResult)
+    assert assert_list_of_instances(movies, MovieResult)
 
 
 @pytest.mark.asyncio
 async def test_discover_movies_upcoming(seerr_client: SeerrClient) -> None:
     movies = await seerr_client.discover.movies.upcoming()
 
-    assert _test_list_of_instances(movies, MovieResult)
+    assert assert_list_of_instances(movies, MovieResult)
 
 
 @pytest.mark.asyncio
 async def test_discover_tv(seerr_client: SeerrClient) -> None:
     tvs = await seerr_client.discover.tv.list()
 
-    assert _test_list_of_instances(tvs, TVResult)
+    assert assert_list_of_instances(tvs, TVResult)
 
 
 @pytest.mark.asyncio
@@ -157,7 +158,7 @@ async def test_discover_tv_error_certification_range(
 async def test_discover_tv_genre(seerr_client: SeerrClient, seerr_genre: Genre) -> None:
     tvs = await seerr_client.discover.tv.genre(seerr_genre)
 
-    assert _test_list_of_instances(tvs, TVResult)
+    assert assert_list_of_instances(tvs, TVResult)
 
 
 @pytest.mark.asyncio
@@ -167,7 +168,7 @@ async def test_discover_tv_language(
 ) -> None:
     tvs = await seerr_client.discover.tv.language(seerr_language)
 
-    assert _test_list_of_instances(tvs, TVResult)
+    assert assert_list_of_instances(tvs, TVResult)
 
 
 @pytest.mark.asyncio
@@ -177,39 +178,39 @@ async def test_discover_tv_network(
 ) -> None:
     tvs = await seerr_client.discover.tv.network(seerr_network)
 
-    assert _test_list_of_instances(tvs, TVResult)
+    assert assert_list_of_instances(tvs, TVResult)
 
 
 @pytest.mark.asyncio
 async def test_discover_tv_upcoming(seerr_client: SeerrClient) -> None:
     tvs = await seerr_client.discover.tv.upcoming()
 
-    assert _test_list_of_instances(tvs, TVResult)
+    assert assert_list_of_instances(tvs, TVResult)
 
 
 @pytest.mark.asyncio
 async def test_discover_trending(seerr_client: SeerrClient) -> None:
     media = await seerr_client.discover.trending()
 
-    assert _test_list_of_instances(media, (MovieResult, TVResult))
+    assert assert_list_of_instances(media, (MovieResult, TVResult))
 
 
 @pytest.mark.asyncio
 async def test_discover_genre_slider_movie(seerr_client: SeerrClient) -> None:
     movies = await seerr_client.discover.genre_slider(MediaType.MOVIE)
 
-    assert _test_list_of_instances(movies, GenreSlider)
+    assert assert_list_of_instances(movies, GenreSlider)
 
 
 @pytest.mark.asyncio
 async def test_discover_genre_slider_tv(seerr_client: SeerrClient) -> None:
     tvs = await seerr_client.discover.genre_slider(MediaType.TV)
 
-    assert _test_list_of_instances(tvs, GenreSlider)
+    assert assert_list_of_instances(tvs, GenreSlider)
 
 
 @pytest.mark.asyncio
 async def test_discover_watchlist(seerr_client: SeerrClient) -> None:
     watchlist = await seerr_client.discover.watchlist()
 
-    assert _test_list_of_instances(watchlist, WatchlistItem)
+    assert assert_list_of_instances(watchlist, WatchlistItem)

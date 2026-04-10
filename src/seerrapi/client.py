@@ -15,6 +15,7 @@ from .request import (
 from .search import DiscoverEndpoints, SearchEndpoints
 from .service import ServiceEndpoints
 from .settings import MainSettings, NetworkSettings
+from .tmdb import TMDBEndpoints
 from .tv import TVEndpoints
 from .watchlist import WatchlistEndpoints
 
@@ -40,6 +41,7 @@ class SeerrClient:
         self.collection = CollectionEndpoints(self)
         self.service = ServiceEndpoints(self)
         self.watchlist = WatchlistEndpoints(self)
+        self.tmdb = TMDBEndpoints(self)
 
     # shortcut methods
     async def me(self) -> User:

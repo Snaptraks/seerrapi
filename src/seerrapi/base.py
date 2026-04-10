@@ -122,7 +122,7 @@ class ProductionCompany(Base):
 
 
 class ProductionCountry(Base):
-    name: str
+    name: str = Field(validation_alias=AliasChoices("name", "native_name"))
     iso_3166_1: str = Field(alias="iso_3166_1")
 
 

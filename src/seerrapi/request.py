@@ -43,7 +43,8 @@ class MediaStatus(IntEnum):
     PROCESSING = 3
     PARTIALLY_AVAILABLE = 4
     AVAILABLE = 5
-    DELETED = 6
+    BLOCKLISTED = 6
+    DELETED = 7
 
 
 class _MediaInfoBase(Base):
@@ -70,12 +71,12 @@ class _MediaInfoBase(Base):
     rating_key_4k: str | None
     jellyfin_media_id: int | None
     jellyfin_media_id_4k: int | None
-    requests: list[Request] = Field(default_factory=list)
     service_url: str | None = None
 
 
 class MediaInfo(_MediaInfoBase):
-    seasons: list[int] | Literal["all"] = Field(default_factory=list)
+    seasons: list[int] | list[Season] | Literal["all"] = Field(default_factory=list)
+    requests: list[Request] = Field(default_factory=list)
 
 
 # Request objects
@@ -86,6 +87,7 @@ class RequestStatus(IntEnum):
     APPROVED = 2
     DECLINED = 3
     FAILED = 4
+    COMPLETED = 5
 
 
 class PageInfo(Base):
@@ -98,7 +100,7 @@ class PageInfo(Base):
 class Season(Base):
     id: int
     season_number: int
-    status: RequestStatus
+    status: MediaStatus
     created_at: datetime
     updated_at: datetime
 

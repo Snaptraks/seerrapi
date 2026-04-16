@@ -6,6 +6,7 @@ from .auth import AuthEndpoints
 from .blocklist import BlocklistEndpoints
 from .collection import CollectionEndpoints
 from .http import HTTP, APIPath
+from .media import MediaEndpoints
 from .movies import MovieEndpoints
 from .person import PersonEndpoints
 from .public import StatusEndpoints
@@ -42,6 +43,7 @@ class SeerrClient:
         self.service = ServiceEndpoints(self)
         self.watchlist = WatchlistEndpoints(self)
         self.tmdb = TMDBEndpoints(self)
+        self.media = MediaEndpoints(self)
 
     # shortcut methods
     async def me(self) -> User:

@@ -31,6 +31,9 @@ class APIPath:
     def __str__(self) -> str:
         return self._path
 
+    def __repr__(self) -> str:
+        return self._path
+
 
 @dataclass
 class HTTP:

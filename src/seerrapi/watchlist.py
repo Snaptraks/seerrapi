@@ -24,7 +24,9 @@ class WatchlistItem(Stateful):
 
     async def delete(self) -> None:
         await self.http.request(
-            "DELETE", APIPath("/watchlist/{tmdb_id}", tmdb_id=self.tmdb_id)
+            "DELETE",
+            APIPath("/watchlist/{tmdb_id}", tmdb_id=self.tmdb_id),
+            params={"media_type": self.media_type},
         )
 
 

@@ -78,7 +78,7 @@ class _TVBase(Stateful):
     original_name: str
     overview: str
     popularity: float
-    poster_path: str
+    poster_path: str | None
     vote_average: float
     vote_count: int
 

@@ -47,9 +47,7 @@ async def test_blocklist_details(
 ) -> None:
     # not great, but this test checks the media added
     # in test_blocklist_add, which is run before
-    blocklist_item = await seerr_client.blocklist.details(
-        seerr_media.tmdb_id, seerr_media.media_type
-    )
+    blocklist_item = await seerr_client.blocklist.details(seerr_media)
     assert isinstance(blocklist_item, BlocklistItem)
 
 
@@ -60,4 +58,4 @@ async def test_blocklist_remove(
 ) -> None:
     # not great, but this test removes the media added
     # in test_blocklist_add, which is run before
-    await seerr_client.blocklist.remove(seerr_media.tmdb_id, seerr_media.media_type)
+    await seerr_client.blocklist.remove(seerr_media)

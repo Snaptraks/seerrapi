@@ -9,6 +9,7 @@ from .http import APIPath
 from .users import User
 
 if TYPE_CHECKING:
+    from .base import Requestable
 
     class MediaInfo(Protocol):
         title: str
@@ -71,24 +72,24 @@ class BlocklistEndpoints(Endpoints):
 
         await self.client.http.request("POST", APIPath("/blocklist"), payload=payload)
 
-    async def details(self, tmdb_id: int, media_type: MediaType) -> BlocklistItem:
-        if media_type not in (MediaType.MOVIE, MediaType.TV):
-            msg = f"Unsupported media type: {media_type}"
+    async def details(self, media: Requestable) -> BlocklistItem:
+        if media.media_type not in (MediaType.MOVIE, MediaType.TV):
+            msg = f"Unsupported media type: {media.media_type}"
             raise ValueError(msg)
         return BlocklistItem.from_data(
             await self.client.http.request(
                 "GET",
-                APIPath("/blocklist/{tmdb_id}", tmdb_id=tmdb_id),
-                params={"media_type": media_type},
+                APIPath("/blocklist/{tmdb_id}", tmdb_id=media.id),
+                params={"media_type": media.media_type},
             ),
         )
 
-    async def remove(self, tmdb_id: int, media_type: MediaType) -> None:
-        if media_type not in (MediaType.MOVIE, MediaType.TV):
-            msg = f"Unsupported media type: {media_type}"
+    async def remove(self, media: Requestable) -> None:
+        if media.media_type not in (MediaType.MOVIE, MediaType.TV):
+            msg = f"Unsupported media type: {media.media_type}"
             raise ValueError(msg)
         await self.client.http.request(
             "DELETE",
-            APIPath("/blocklist/{tmdb_id}", tmdb_id=tmdb_id),
-            params={"media_type": media_type},
+            APIPath("/blocklist/{tmdb_id}", tmdb_id=media.id),
+            params={"media_type": media.media_type},
         )

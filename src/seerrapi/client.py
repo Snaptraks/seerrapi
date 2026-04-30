@@ -8,6 +8,7 @@ from .collection import CollectionEndpoints
 from .http import HTTP, APIPath
 from .media import MediaEndpoints
 from .movies import MovieEndpoints
+from .overriderule import OverrideRuleEndpoints
 from .person import PersonEndpoints
 from .public import StatusEndpoints
 from .request import (
@@ -44,6 +45,7 @@ class SeerrClient:
         self.watchlist = WatchlistEndpoints(self)
         self.tmdb = TMDBEndpoints(self)
         self.media = MediaEndpoints(self)
+        self.overriderule = OverrideRuleEndpoints(self)
 
     # shortcut methods
     async def me(self) -> User:

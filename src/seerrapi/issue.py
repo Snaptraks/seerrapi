@@ -1,12 +1,10 @@
 from __future__ import annotations
 
 from enum import IntEnum
-from typing import TYPE_CHECKING, Any, Literal, Self
+from typing import TYPE_CHECKING, Any, Literal
 
-from pydantic import model_validator
-
-from .base import Base, Endpoints, Stateful
-from .http import HTTP, APIPath, client_http_context
+from .base import Endpoints, Stateful
+from .http import APIPath
 from .request import MediaInfo
 from .users import User
 
@@ -22,27 +20,19 @@ class IssueType(IntEnum):
     OTHER = 4
 
 
-class IssueComment(Base):
+class IssueComment(Stateful):
     id: int
     user: User | None = None
     message: str
 
-    @property
-    def http(self) -> HTTP:
-        return client_http_context.get()
 
-
-class Issue(Base):
+class Issue(Stateful):
     id: int
     issue_type: IssueType
     media: MediaInfo
     created_by: User
     modified_by: User | None = None
     comments: list[IssueComment]
-
-    @property
-    def http(self) -> HTTP:
-        return client_http_context.get()
 
 
 class IssueEndpoints(Endpoints):
@@ -63,6 +53,6 @@ class IssueEndpoints(Endpoints):
         if requested_by:
             params["requested_by"] = requested_by
 
-        resp = await self.client.http.request("GET", APIPath("/issue"))
+        resp = await self.http.request("GET", APIPath("/issue"))
 
         return Issue.from_data_list(resp["results"])

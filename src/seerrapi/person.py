@@ -38,10 +38,9 @@ class Person(Stateful):
 class PersonEndpoints(Endpoints):
     async def get(self, person_id: int, *, language: str = "en") -> Person:
         return Person.from_data(
-            await self.client.http.request(
+            await self.http.request(
                 "GET",
                 APIPath("/person/{person_id}", person_id=person_id),
                 params={"language": language},
-            ),
-            http=self.client.http,
+            )
         )

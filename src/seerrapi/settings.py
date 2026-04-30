@@ -75,15 +75,14 @@ class MainSettings(Stateful):
 
     async def update(self, **payload: Unpack[MainSettingsDict]) -> MainSettings:
         return MainSettings.from_data(
-            await self.http.request("POST", APIPath("/settings/main"), payload=payload),  # pyright: ignore[reportArgumentType]
-            http=self.http,
+            await self.http.request("POST", APIPath("/settings/main"), payload=payload)  # pyright: ignore[reportArgumentType]
         )
 
     async def regenerate(self) -> MainSettings:
         path = APIPath("/settings/main/regenerate")
         resp = await self.http.request("POST", path)
 
-        return MainSettings.from_data(resp, http=self.http)
+        return MainSettings.from_data(resp)
 
 
 class Proxy(Base):
@@ -113,6 +112,5 @@ class NetworkSettings(Stateful):
 
     async def update(self, **payload: Unpack[NetworkSettingsDict]) -> NetworkSettings:
         return NetworkSettings.from_data(
-            await self.http.request("POST", APIPath("/settings/main"), payload=payload),  # pyright: ignore[reportArgumentType]
-            http=self.http,
+            await self.http.request("POST", APIPath("/settings/main"), payload=payload)  # pyright: ignore[reportArgumentType]
         )

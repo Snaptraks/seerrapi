@@ -96,7 +96,7 @@ class Movie(_MovieBase):
             APIPath("/movie/{movie_id}/recommendations", movie_id=self.id),
             params={"page": page, "language": language},
         )
-        return MovieRecommendation.from_data_list(resp["results"], http=self.http)
+        return MovieRecommendation.from_data_list(resp["results"])
 
     async def get_similar(
         self,
@@ -109,7 +109,7 @@ class Movie(_MovieBase):
             APIPath("/movie/{movie_id}/similar", movie_id=self.id),
             params={"page": page, "language": language},
         )
-        return MovieRecommendation.from_data_list(resp["results"], http=self.http)
+        return MovieRecommendation.from_data_list(resp["results"])
 
     async def get_ratings(self) -> RottenTomatoesRatings:
         # Only Rotten Tomatoes
@@ -135,10 +135,9 @@ class Movie(_MovieBase):
 class MovieEndpoints(Endpoints):
     async def get(self, movie_id: int, *, language: str = "en") -> Movie:
         return Movie.from_data(
-            await self.client.http.request(
+            await self.http.request(
                 "GET",
                 APIPath("/movie/{movie_id}", movie_id=movie_id),
                 params={"language": language},
-            ),
-            http=self.client.http,
+            )
         )

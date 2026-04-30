@@ -54,7 +54,7 @@ class Media(Stateful, _MediaInfoBase):  # pyright: ignore[reportIncompatibleMeth
             payload={},  # needs an empty payload?
         )
 
-        return Media.from_data(resp, http=self.http)
+        return Media.from_data(resp)
 
     async def watch_data(self) -> ...:
         resp = await self.http.request(
@@ -79,6 +79,6 @@ class MediaEndpoints(Endpoints):
         if sort:
             params["sort"] = sort
 
-        resp = await self.client.http.request("GET", APIPath("/media"), params=params)
+        resp = await self.http.request("GET", APIPath("/media"), params=params)
 
-        return Media.from_data_list(resp["results"], http=self.client.http)
+        return Media.from_data_list(resp["results"])

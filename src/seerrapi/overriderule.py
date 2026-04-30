@@ -78,8 +78,7 @@ class OverrideRule(Stateful):
 class OverrideRuleEndpoints(Endpoints):
     async def get(self) -> list[OverrideRule]:
         return OverrideRule.from_data_list(
-            await self.client.http.request("GET", APIPath("/overrideRule")),
-            http=self.client.http,
+            await self.http.request("GET", APIPath("/overrideRule"))
         )
 
     async def create(  # noqa: C901, PLR0913
@@ -116,8 +115,5 @@ class OverrideRuleEndpoints(Endpoints):
             payload["tags"] = ",".join(tags)
 
         return OverrideRule.from_data(
-            await self.client.http.request(
-                "POST", APIPath("/overrideRule"), payload=payload
-            ),
-            http=self.client.http,
+            await self.http.request("POST", APIPath("/overrideRule"), payload=payload)
         )

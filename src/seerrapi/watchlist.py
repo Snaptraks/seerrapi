@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 
 from .base import Endpoints, MediaType, Stateful
+from .context import client_context
 from .http import APIPath
 from .request import MediaInfo
 from .users import User
@@ -33,16 +34,15 @@ class WatchlistItem(Stateful):
 class WatchlistEndpoints(Endpoints):
     async def add(self, media: Requestable) -> WatchlistItem:
         payload = {"tmdb_id": media.id, "media_type": media.media_type}
-        resp = await self.client.http.request(
-            "POST", APIPath("/watchlist"), payload=payload
-        )
+        resp = await self.http.request("POST", APIPath("/watchlist"), payload=payload)
 
-        return WatchlistItem.from_data(resp, http=self.client.http)
+        return WatchlistItem.from_data(resp)
 
     async def list(self) -> list[WatchlistItem]:
-        user = await self.client.me()
-        resp = await self.client.http.request(
+        client = client_context.get()
+        user = await client.me()
+        resp = await self.http.request(
             "GET", APIPath("/user/{user_id}/watchlist", user_id=user.id)
         )
 
-        return WatchlistItem.from_data_list(resp["results"], http=self.client.http)
+        return WatchlistItem.from_data_list(resp["results"])

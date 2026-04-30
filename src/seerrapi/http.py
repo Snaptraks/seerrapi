@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 from importlib import metadata
 from json import JSONDecodeError
 from typing import TYPE_CHECKING, Any, Literal
@@ -35,11 +34,15 @@ class APIPath:
         return self._path
 
 
-@dataclass
 class HTTP:
     host: str
     _api_key: str | None = None
     _cookie_auth: str | None = None
+
+    def __init__(self, *, host: str, api_key: str | None = None) -> None:
+        self.host = host
+        self._api_key = api_key
+        self._cookie_auth = None
 
     async def request(
         self,

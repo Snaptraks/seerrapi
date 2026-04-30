@@ -31,7 +31,7 @@ class SeerrClient:
     def __init__(self, *, host: str, api_key: str | None = None) -> None:
         self.host = host.removesuffix("/")
         self.api_key = api_key
-        self.http = HTTP(host=host, _api_key=api_key)
+        self.http = HTTP(host=host, api_key=api_key)
 
         self.status = StatusEndpoints()
         self.auth = AuthEndpoints()

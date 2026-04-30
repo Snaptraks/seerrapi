@@ -5,7 +5,8 @@ from typing import TYPE_CHECKING
 from .auth import AuthEndpoints
 from .blocklist import BlocklistEndpoints
 from .collection import CollectionEndpoints
-from .http import HTTP, APIPath
+from .http import HTTP, APIPath, client_http_context
+from .issue import IssueEndpoints
 from .media import MediaEndpoints
 from .movies import MovieEndpoints
 from .overriderule import OverrideRuleEndpoints
@@ -31,6 +32,8 @@ class SeerrClient:
         self.api_key = api_key
         self.http = HTTP(host=host, _api_key=api_key)
 
+        client_http_context.set(self.http)
+
         self.status = StatusEndpoints(self)
         self.auth = AuthEndpoints(self)
         self.blocklist = BlocklistEndpoints(self)
@@ -46,6 +49,7 @@ class SeerrClient:
         self.tmdb = TMDBEndpoints(self)
         self.media = MediaEndpoints(self)
         self.overriderule = OverrideRuleEndpoints(self)
+        self.issue = IssueEndpoints(self)
 
     # shortcut methods
     async def me(self) -> User:

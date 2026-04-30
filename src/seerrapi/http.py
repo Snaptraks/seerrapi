@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from contextvars import ContextVar
 from dataclasses import dataclass
 from importlib import metadata
 from json import JSONDecodeError
@@ -16,6 +17,8 @@ if TYPE_CHECKING:
 
 
 VERSION = metadata.version(__package__)  # pyright: ignore[reportArgumentType]
+
+client_http_context: ContextVar[HTTP] = ContextVar("client_http_session")
 
 
 class APIPath:

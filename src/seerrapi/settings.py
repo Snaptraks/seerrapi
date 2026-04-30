@@ -34,7 +34,7 @@ if TYPE_CHECKING:
     class NetworkSettingsDict(TypedDict, total=False):
         csrf_protection: bool
         force_ipv4_first: bool
-        truust_proxy: bool
+        trust_proxy: bool
         proxy: Proxy
         dns_cache: DNSCache
         api_request_timeout: int

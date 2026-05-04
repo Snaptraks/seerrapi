@@ -50,7 +50,7 @@ class DefaultQuotas(Base):
     tv: Quota = Field(default_factory=Quota)
 
 
-class MainSettings(Stateful):
+class MainSettings(Base, Stateful):
     api_key: str
     application_title: str
     application_url: str
@@ -102,7 +102,7 @@ class DNSCache(Base):
     force_max_ttl: int
 
 
-class NetworkSettings(Stateful):
+class NetworkSettings(Base, Stateful):
     csrf_protection: bool
     force_ipv4_first: bool
     trust_proxy: bool

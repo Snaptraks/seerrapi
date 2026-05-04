@@ -2,13 +2,13 @@ from datetime import date
 
 from pydantic import Field
 
-from .base import Credits, Endpoints, Gender, Stateful
+from .base import Base, Credits, Endpoints, Gender, Stateful
 from .http import APIPath
 from .movies import Movie
 from .tv import TV
 
 
-class Person(Stateful):
+class Person(Base, Stateful):
     id: int
     name: str
     birthday: date | None

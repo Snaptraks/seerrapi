@@ -68,7 +68,7 @@ class TVMediaInfo(_MediaInfoBase):
     seasons: list[Season]
 
 
-class _TVBase(Stateful):
+class _TVBase(Base, Stateful):
     id: int
     backdrop_path: str | None
     first_air_date: date

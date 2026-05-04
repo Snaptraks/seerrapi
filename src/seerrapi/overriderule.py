@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
-from .base import Endpoints, Keyword, Stateful
+from .base import Base, Endpoints, Keyword, Stateful
 from .http import APIPath
 from .service import Radarr, Sonarr
 
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from .users import User
 
 
-class OverrideRule(Stateful):
+class OverrideRule(Base, Stateful):
     id: int
     radarr_service_id: int | None
     sonarr_service_id: int | None

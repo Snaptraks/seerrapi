@@ -37,7 +37,7 @@ class Collection(PartialCollection):
     parts: list[CollectionMovie]
 
 
-class _MovieBase(Stateful):
+class _MovieBase(Base, Stateful):
     id: int
     adult: bool
     backdrop_path: str | None

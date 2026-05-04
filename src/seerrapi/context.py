@@ -8,4 +8,4 @@ if TYPE_CHECKING:
     from .http import HTTP
 
 client_context: ContextVar[SeerrClient] = ContextVar("client_context_client")
-client_http_context: ContextVar[HTTP] = ContextVar("client_http_session")
+http_context: ContextVar[HTTP] = ContextVar("client_http_session")

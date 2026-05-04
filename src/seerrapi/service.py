@@ -13,7 +13,7 @@ class ServiceRootFolder(Base):
     path: str
 
 
-class Service(Stateful):
+class Service(Base, Stateful):
     id: int
     name: str
     is_4k: bool

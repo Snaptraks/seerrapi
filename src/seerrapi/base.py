@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, Protocol, Self
 
 from pydantic import AliasChoices, AliasGenerator, BaseModel, ConfigDict, Field
 
-from .context import client_http_context
+from .context import http_context
 from .utils import to_camel_case
 
 if TYPE_CHECKING:
@@ -25,10 +25,14 @@ _model_config = ConfigDict(
 )
 
 
-class Endpoints:
+class Stateful:
     @property
     def http(self) -> HTTP:
-        return client_http_context.get()
+        return http_context.get()
+
+
+class Endpoints(Stateful):
+    pass
 
 
 class Base(BaseModel):
@@ -41,14 +45,6 @@ class Base(BaseModel):
     @classmethod
     def from_data_list(cls, data: list[dict[str, Any]]) -> list[Self]:
         return [cls.model_validate(d, by_alias=True) for d in data]
-
-
-class Stateful(Base):
-    model_config = _model_config
-
-    @property
-    def http(self) -> HTTP:
-        return client_http_context.get()
 
 
 class MediaServerType(IntEnum):

@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+from datetime import datetime
 from enum import IntEnum
 from typing import TYPE_CHECKING, Any, Literal
 
-from .base import Endpoints, Stateful
+from .base import Base, Endpoints, Stateful
 from .http import APIPath
 from .request import MediaInfo
 from .users import User
@@ -20,13 +21,22 @@ class IssueType(IntEnum):
     OTHER = 4
 
 
-class IssueComment(Stateful):
+class IssueComment(Base, Stateful):
     id: int
     user: User | None = None
     message: str
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
+
+    async def details(self) -> IssueComment:
+        return IssueComment.from_data(
+            await self.http.request(
+                "GET", APIPath("/issueComment/{comment_id}", comment_id=self.id)
+            )
+        )
 
 
-class Issue(Stateful):
+class Issue(Base, Stateful):
     id: int
     issue_type: IssueType
     media: MediaInfo
@@ -53,6 +63,6 @@ class IssueEndpoints(Endpoints):
         if requested_by:
             params["requested_by"] = requested_by
 
-        resp = await self.http.request("GET", APIPath("/issue"))
+        resp = await self.http.request("GET", APIPath("/issue"), params=params)
 
         return Issue.from_data_list(resp["results"])

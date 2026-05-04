@@ -39,7 +39,7 @@ class WatchData(Base):
     play_count_30_days: int
 
 
-class Media(Stateful, _MediaInfoBase):  # pyright: ignore[reportIncompatibleMethodOverride]
+class Media(_MediaInfoBase, Stateful):
     seasons: list[Season]
 
     async def delete(self, *, file: bool = False) -> None:

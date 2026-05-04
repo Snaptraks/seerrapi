@@ -105,7 +105,7 @@ class Season(Base):
     updated_at: datetime
 
 
-class Request(Stateful):
+class Request(Base, Stateful):
     id: int
     status: RequestStatus
     created_at: datetime

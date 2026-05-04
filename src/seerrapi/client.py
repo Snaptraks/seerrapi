@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from .auth import AuthEndpoints
 from .blocklist import BlocklistEndpoints
 from .collection import CollectionEndpoints
-from .context import client_context, client_http_context
+from .context import client_context, http_context
 from .http import HTTP, APIPath
 from .issue import IssueEndpoints
 from .media import MediaEndpoints
@@ -51,7 +51,7 @@ class SeerrClient:
         self.issue = IssueEndpoints()
 
         client_context.set(self)
-        client_http_context.set(self.http)
+        http_context.set(self.http)
 
     # shortcut methods
     async def me(self) -> User:

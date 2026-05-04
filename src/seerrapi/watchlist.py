@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from .base import Endpoints, MediaType, Stateful
+from .base import Base, Endpoints, MediaType, Stateful
 from .context import client_context
 from .http import APIPath
 from .request import MediaInfo
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from .base import Requestable
 
 
-class WatchlistItem(Stateful):
+class WatchlistItem(Base, Stateful):
     id: int
     title: str
     media_type: MediaType

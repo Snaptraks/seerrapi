@@ -6,10 +6,10 @@ from typing import TYPE_CHECKING, Any, Protocol, Self
 
 from pydantic import AliasChoices, AliasGenerator, BaseModel, ConfigDict, Field
 
+from .context import http_context
 from .utils import to_camel_case
 
 if TYPE_CHECKING:
-    from .client import SeerrClient
     from .http import HTTP
 
     class Requestable[T](Protocol):
@@ -25,9 +25,14 @@ _model_config = ConfigDict(
 )
 
 
-class Endpoints:
-    def __init__(self, client: SeerrClient) -> None:
-        self.client = client
+class Stateful:
+    @property
+    def http(self) -> HTTP:
+        return http_context.get()
+
+
+class Endpoints(Stateful):
+    pass
 
 
 class Base(BaseModel):
@@ -40,33 +45,6 @@ class Base(BaseModel):
     @classmethod
     def from_data_list(cls, data: list[dict[str, Any]]) -> list[Self]:
         return [cls.model_validate(d, by_alias=True) for d in data]
-
-
-class Stateful(BaseModel):
-    model_config = _model_config
-
-    @property
-    def http(self) -> HTTP:
-        return self._http
-
-    @http.setter
-    def http(self, value: HTTP) -> None:
-        self._http = value
-
-    @classmethod
-    def from_data(cls, data: dict[str, Any], *, http: HTTP) -> Self:
-        obj = cls.model_validate(data, by_alias=True)
-        obj.http = http
-
-        return obj
-
-    @classmethod
-    def from_data_list(cls, data: list[dict[str, Any]], *, http: HTTP) -> list[Self]:
-        objs = [cls.model_validate(d, by_alias=True) for d in data]
-        for obj in objs:
-            obj.http = http
-
-        return objs
 
 
 class MediaServerType(IntEnum):

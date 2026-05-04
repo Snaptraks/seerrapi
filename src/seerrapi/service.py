@@ -13,7 +13,7 @@ class ServiceRootFolder(Base):
     path: str
 
 
-class Service(Stateful):
+class Service(Base, Stateful):
     id: int
     name: str
     is_4k: bool
@@ -58,12 +58,10 @@ class Sonarr(Service):
 class ServiceEndpoints(Endpoints):
     async def radarr(self) -> list[Radarr]:
         return Radarr.from_data_list(
-            await self.client.http.request("GET", APIPath("/service/radarr")),
-            http=self.client.http,
+            await self.http.request("GET", APIPath("/service/radarr"))
         )
 
     async def sonarr(self) -> list[Sonarr]:
         return Sonarr.from_data_list(
-            await self.client.http.request("GET", APIPath("/service/sonarr")),
-            http=self.client.http,
+            await self.http.request("GET", APIPath("/service/sonarr"))
         )

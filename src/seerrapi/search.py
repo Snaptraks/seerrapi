@@ -24,8 +24,6 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from datetime import datetime
 
-    from seerrapi.client import SeerrClient
-
     from .languages import Language
     from .regions import Region
 
@@ -110,13 +108,13 @@ class SearchEndpoints(Endpoints):
         language: str = "en",
     ) -> list[MovieResult | TVResult | PersonResult]:
         params = {"query": query, "page": page, "language": language}
-        resp = await self.client.http.request("GET", APIPath("/search"), params=params)
+        resp = await self.http.request("GET", APIPath("/search"), params=params)
 
         return [_validate_media_type(media) for media in resp["results"]]
 
     async def keyword(self, query: str, *, page: int = 1) -> list[Keyword]:
         params = {"query": query, "page": page}
-        resp = await self.client.http.request(
+        resp = await self.http.request(
             "GET",
             APIPath("/search/keyword"),
             params=params,
@@ -126,7 +124,7 @@ class SearchEndpoints(Endpoints):
 
     async def company(self, query: str, *, page: int = 1) -> list[ProductionCompany]:
         params = {"query": query, "page": page}
-        resp = await self.client.http.request(
+        resp = await self.http.request(
             "GET",
             APIPath("/search/company"),
             params=params,
@@ -219,7 +217,7 @@ class DiscoverMovies(Endpoints):
                 if certification:
                     params["certification"] = certification
 
-        resp = await self.client.http.request(
+        resp = await self.http.request(
             "GET",
             APIPath("/discover/movies"),
             params=params,
@@ -235,7 +233,7 @@ class DiscoverMovies(Endpoints):
         language: str = "en",
     ) -> list[MovieResult]:
         params = {"page": page, "language": language}
-        resp = await self.client.http.request(
+        resp = await self.http.request(
             "GET",
             APIPath("/discover/movies/genre/{genre_id}", genre_id=genre.id),
             params=params,
@@ -251,7 +249,7 @@ class DiscoverMovies(Endpoints):
         language: str = "en",
     ) -> list[MovieResult]:
         params = {"page": page, "language": language}
-        resp = await self.client.http.request(
+        resp = await self.http.request(
             "GET",
             APIPath(
                 "/discover/movies/language/{original_language}",
@@ -270,7 +268,7 @@ class DiscoverMovies(Endpoints):
         language: str = "en",
     ) -> list[MovieResult]:
         params = {"page": page, "language": language}
-        resp = await self.client.http.request(
+        resp = await self.http.request(
             "GET",
             APIPath(
                 "/discover/movies/studio/{studio_id}",
@@ -288,7 +286,7 @@ class DiscoverMovies(Endpoints):
         language: str = "en",
     ) -> list[MovieResult]:
         params = {"page": page, "language": language}
-        resp = await self.client.http.request(
+        resp = await self.http.request(
             "GET",
             APIPath(
                 "/discover/movies/upcoming",
@@ -386,7 +384,7 @@ class DiscoverTV(Endpoints):
                 if certification:
                     params["certification"] = certification
 
-        resp = await self.client.http.request(
+        resp = await self.http.request(
             "GET",
             APIPath("/discover/tv"),
             params=params,
@@ -402,7 +400,7 @@ class DiscoverTV(Endpoints):
         language: str = "en",
     ) -> list[TVResult]:
         params = {"page": page, "language": language}
-        resp = await self.client.http.request(
+        resp = await self.http.request(
             "GET",
             APIPath("/discover/tv/genre/{genre_id}", genre_id=genre.id),
             params=params,
@@ -418,7 +416,7 @@ class DiscoverTV(Endpoints):
         language: str = "en",
     ) -> list[TVResult]:
         params = {"page": page, "language": language}
-        resp = await self.client.http.request(
+        resp = await self.http.request(
             "GET",
             APIPath(
                 "/discover/tv/language/{original_language}",
@@ -437,7 +435,7 @@ class DiscoverTV(Endpoints):
         language: str = "en",
     ) -> list[TVResult]:
         params = {"page": page, "language": language}
-        resp = await self.client.http.request(
+        resp = await self.http.request(
             "GET",
             APIPath(
                 "/discover/tv/network/{network_id}",
@@ -450,7 +448,7 @@ class DiscoverTV(Endpoints):
 
     async def upcoming(self, page: int = 1, language: str = "en") -> list[TVResult]:
         params = {"page": page, "language": language}
-        resp = await self.client.http.request(
+        resp = await self.http.request(
             "GET",
             APIPath(
                 "/discover/tv/upcoming",
@@ -462,10 +460,9 @@ class DiscoverTV(Endpoints):
 
 
 class DiscoverEndpoints(Endpoints):
-    def __init__(self, client: SeerrClient) -> None:
-        super().__init__(client)
-        self.movies = DiscoverMovies(client)
-        self.tv = DiscoverTV(client)
+    def __init__(self) -> None:
+        self.movies = DiscoverMovies()
+        self.tv = DiscoverTV()
 
     async def trending(
         self,
@@ -474,7 +471,7 @@ class DiscoverEndpoints(Endpoints):
         language: str = "en",
     ) -> list[MovieResult | TVResult]:
         params = {"page": page, "language": language}
-        resp = await self.client.http.request(
+        resp = await self.http.request(
             "GET",
             APIPath("/discover/trending"),
             params=params,
@@ -491,7 +488,7 @@ class DiscoverEndpoints(Endpoints):
         language: str = "en",
     ) -> list[GenreSlider]:
         params = {"language": language}
-        resp = await self.client.http.request(
+        resp = await self.http.request(
             "GET",
             APIPath(f"/discover/genreslider/{media_type}"),
             params=params,
@@ -501,10 +498,10 @@ class DiscoverEndpoints(Endpoints):
 
     async def watchlist(self, *, page: int = 1) -> list[WatchlistItem]:
         params = {"page": page}
-        resp = await self.client.http.request(
+        resp = await self.http.request(
             "GET",
             APIPath("/discover/watchlist"),
             params=params,
         )
 
-        return WatchlistItem.from_data_list(resp["results"], http=self.client.http)
+        return WatchlistItem.from_data_list(resp["results"])

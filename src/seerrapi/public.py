@@ -18,11 +18,9 @@ class AppData(Base):
 
 class StatusEndpoints(Endpoints):
     async def get(self) -> Status:
-        return Status.from_data(
-            await self.client.http.request("GET", APIPath("/status")),
-        )
+        return Status.from_data(await self.http.request("GET", APIPath("/status")))
 
     async def app_data(self) -> AppData:
         return AppData.from_data(
-            await self.client.http.request("GET", APIPath("/status/appdata")),
+            await self.http.request("GET", APIPath("/status/appdata"))
         )

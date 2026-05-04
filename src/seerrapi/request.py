@@ -105,7 +105,7 @@ class Season(Base):
     updated_at: datetime
 
 
-class Request(Stateful):
+class Request(Base, Stateful):
     id: int
     status: RequestStatus
     created_at: datetime
@@ -172,8 +172,7 @@ class Request(Stateful):
                 "PUT",
                 APIPath("/request/{request_id}", request_id=self.id),
                 payload=self_payload | payload,
-            ),
-            http=self.http,
+            )
         )
 
     async def delete(self) -> None:
@@ -187,8 +186,7 @@ class Request(Stateful):
             await self.http.request(
                 "POST",
                 APIPath("/request/{request_id}/retry", request_id=self.id),
-            ),
-            http=self.http,
+            )
         )
 
     async def update_status(self, status: Literal["approve", "decline"]) -> Request:
@@ -200,8 +198,7 @@ class Request(Stateful):
                     request_id=self.id,
                     status=status,
                 ),
-            ),
-            http=self.http,
+            )
         )
 
 
@@ -230,10 +227,7 @@ class RequestEndpoints(Endpoints):
         if media.media_type == MediaType.MOVIE and seasons is not None:
             warn("Requested a Movie with Seasons data, ignoring seasons.", stacklevel=2)
         return Request.from_data(
-            await self.client.http.request(
-                "POST", APIPath("/request"), payload=request_data
-            ),
-            http=self.client.http,
+            await self.http.request("POST", APIPath("/request"), payload=request_data)
         )
 
     async def list(  # noqa: PLR0913
@@ -259,20 +253,19 @@ class RequestEndpoints(Endpoints):
         if media_type:
             params["media_type"] = media_type
 
-        resp = await self.client.http.request("GET", APIPath("/request"), params=params)  # pyright: ignore[reportArgumentType]
+        resp = await self.http.request("GET", APIPath("/request"), params=params)  # pyright: ignore[reportArgumentType]
 
-        return Request.from_data_list(resp["results"], http=self.client.http)
+        return Request.from_data_list(resp["results"])
 
     async def count(self) -> RequestCount:
         return RequestCount.from_data(
-            await self.client.http.request("GET", APIPath("/request/count")),
+            await self.http.request("GET", APIPath("/request/count")),
         )
 
     async def get(self, request_id: int) -> Request:
         return Request.from_data(
-            await self.client.http.request(
+            await self.http.request(
                 "GET",
                 APIPath(f"/request/{request_id}", request_id=request_id),
-            ),
-            http=self.client.http,
+            )
         )

@@ -5,6 +5,7 @@ from enum import StrEnum
 from typing import TYPE_CHECKING, Any, Protocol
 
 from .base import Base, Endpoints, MediaType
+from .context import client_context
 from .http import APIPath
 from .users import User
 
@@ -51,7 +52,7 @@ class BlocklistEndpoints(Endpoints):
         if blocklist_filter is not None:
             params["filter"] = blocklist_filter
 
-        resp = await self.client.http.request(
+        resp = await self.http.request(
             "GET",
             APIPath(
                 "/blocklist",
@@ -62,7 +63,8 @@ class BlocklistEndpoints(Endpoints):
         return BlocklistItem.from_data_list(resp["results"])
 
     async def add(self, media: MediaInfo) -> None:
-        user = await self.client.me()
+        client = client_context.get()
+        user = await client.me()
         payload = {
             "tmdb_id": media.tmdb_id,
             "title": media.title,
@@ -70,14 +72,14 @@ class BlocklistEndpoints(Endpoints):
             "user": user.id,
         }
 
-        await self.client.http.request("POST", APIPath("/blocklist"), payload=payload)
+        await self.http.request("POST", APIPath("/blocklist"), payload=payload)
 
     async def details(self, media: Requestable) -> BlocklistItem:
         if media.media_type not in (MediaType.MOVIE, MediaType.TV):
             msg = f"Unsupported media type: {media.media_type}"
             raise ValueError(msg)
         return BlocklistItem.from_data(
-            await self.client.http.request(
+            await self.http.request(
                 "GET",
                 APIPath("/blocklist/{tmdb_id}", tmdb_id=media.id),
                 params={"media_type": media.media_type},
@@ -88,7 +90,7 @@ class BlocklistEndpoints(Endpoints):
         if media.media_type not in (MediaType.MOVIE, MediaType.TV):
             msg = f"Unsupported media type: {media.media_type}"
             raise ValueError(msg)
-        await self.client.http.request(
+        await self.http.request(
             "DELETE",
             APIPath("/blocklist/{tmdb_id}", tmdb_id=media.id),
             params={"media_type": media.media_type},

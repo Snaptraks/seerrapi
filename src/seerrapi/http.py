@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from contextvars import ContextVar
-from dataclasses import dataclass
 from importlib import metadata
 from json import JSONDecodeError
 from typing import TYPE_CHECKING, Any, Literal
@@ -17,8 +15,6 @@ if TYPE_CHECKING:
 
 
 VERSION = metadata.version(__package__)  # pyright: ignore[reportArgumentType]
-
-client_http_context: ContextVar[HTTP] = ContextVar("client_http_session")
 
 
 class APIPath:
@@ -38,11 +34,15 @@ class APIPath:
         return self._path
 
 
-@dataclass
 class HTTP:
     host: str
     _api_key: str | None = None
     _cookie_auth: str | None = None
+
+    def __init__(self, *, host: str, api_key: str | None = None) -> None:
+        self.host = host
+        self._api_key = api_key
+        self._cookie_auth = None
 
     async def request(
         self,

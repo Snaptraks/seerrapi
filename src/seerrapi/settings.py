@@ -50,7 +50,7 @@ class DefaultQuotas(Base):
     tv: Quota = Field(default_factory=Quota)
 
 
-class MainSettings(Stateful):
+class MainSettings(Base, Stateful):
     api_key: str
     application_title: str
     application_url: str
@@ -75,15 +75,14 @@ class MainSettings(Stateful):
 
     async def update(self, **payload: Unpack[MainSettingsDict]) -> MainSettings:
         return MainSettings.from_data(
-            await self.http.request("POST", APIPath("/settings/main"), payload=payload),  # pyright: ignore[reportArgumentType]
-            http=self.http,
+            await self.http.request("POST", APIPath("/settings/main"), payload=payload)  # pyright: ignore[reportArgumentType]
         )
 
     async def regenerate(self) -> MainSettings:
         path = APIPath("/settings/main/regenerate")
         resp = await self.http.request("POST", path)
 
-        return MainSettings.from_data(resp, http=self.http)
+        return MainSettings.from_data(resp)
 
 
 class Proxy(Base):
@@ -103,7 +102,7 @@ class DNSCache(Base):
     force_max_ttl: int
 
 
-class NetworkSettings(Stateful):
+class NetworkSettings(Base, Stateful):
     csrf_protection: bool
     force_ipv4_first: bool
     trust_proxy: bool
@@ -113,6 +112,5 @@ class NetworkSettings(Stateful):
 
     async def update(self, **payload: Unpack[NetworkSettingsDict]) -> NetworkSettings:
         return NetworkSettings.from_data(
-            await self.http.request("POST", APIPath("/settings/main"), payload=payload),  # pyright: ignore[reportArgumentType]
-            http=self.http,
+            await self.http.request("POST", APIPath("/settings/main"), payload=payload)  # pyright: ignore[reportArgumentType]
         )

@@ -68,7 +68,7 @@ class TVMediaInfo(_MediaInfoBase):
     seasons: list[Season]
 
 
-class _TVBase(Stateful):
+class _TVBase(Base, Stateful):
     id: int
     backdrop_path: str | None
     first_air_date: date
@@ -141,7 +141,7 @@ class TV(_TVBase):
             APIPath("/tv/{tv_id}/recommendations", tv_id=self.id),
             params={"page": page, "language": language},
         )
-        return TVRecommendation.from_data_list(resp["results"], http=self.http)
+        return TVRecommendation.from_data_list(resp["results"])
 
     async def get_similar(
         self,
@@ -154,7 +154,7 @@ class TV(_TVBase):
             APIPath("/tv/{tv_id}/similar", tv_id=self.id),
             params={"page": page, "language": language},
         )
-        return TVRecommendation.from_data_list(resp["results"], http=self.http)
+        return TVRecommendation.from_data_list(resp["results"])
 
     async def get_ratings(self) -> RottenTomatoesRatings:
         # Only Rotten Tomatoes
@@ -169,10 +169,9 @@ class TV(_TVBase):
 class TVEndpoints(Endpoints):
     async def get(self, tv_id: int, *, language: str = "en") -> TV:
         return TV.from_data(
-            await self.client.http.request(
+            await self.http.request(
                 "GET",
                 APIPath("/tv/{tv_id}", tv_id=tv_id),
                 params={"language": language},
-            ),
-            http=self.client.http,
+            )
         )

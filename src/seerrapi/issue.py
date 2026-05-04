@@ -1,12 +1,11 @@
 from __future__ import annotations
 
+from datetime import datetime
 from enum import IntEnum
-from typing import TYPE_CHECKING, Any, Literal, Self
-
-from pydantic import model_validator
+from typing import TYPE_CHECKING, Any, Literal
 
 from .base import Base, Endpoints, Stateful
-from .http import HTTP, APIPath, client_http_context
+from .http import APIPath
 from .request import MediaInfo
 from .users import User
 
@@ -22,27 +21,28 @@ class IssueType(IntEnum):
     OTHER = 4
 
 
-class IssueComment(Base):
+class IssueComment(Base, Stateful):
     id: int
     user: User | None = None
     message: str
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
 
-    @property
-    def http(self) -> HTTP:
-        return client_http_context.get()
+    async def details(self) -> IssueComment:
+        return IssueComment.from_data(
+            await self.http.request(
+                "GET", APIPath("/issueComment/{comment_id}", comment_id=self.id)
+            )
+        )
 
 
-class Issue(Base):
+class Issue(Base, Stateful):
     id: int
     issue_type: IssueType
     media: MediaInfo
     created_by: User
     modified_by: User | None = None
     comments: list[IssueComment]
-
-    @property
-    def http(self) -> HTTP:
-        return client_http_context.get()
 
 
 class IssueEndpoints(Endpoints):
@@ -63,6 +63,6 @@ class IssueEndpoints(Endpoints):
         if requested_by:
             params["requested_by"] = requested_by
 
-        resp = await self.client.http.request("GET", APIPath("/issue"))
+        resp = await self.http.request("GET", APIPath("/issue"), params=params)
 
         return Issue.from_data_list(resp["results"])

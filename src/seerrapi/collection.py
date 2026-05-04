@@ -8,7 +8,7 @@ from .movies import Collection
 class CollectionEndpoints(Endpoints):
     async def get(self, collection_id: int, *, language: str = "en") -> Collection:
         return Collection.from_data(
-            await self.client.http.request(
+            await self.http.request(
                 "GET",
                 APIPath("/collection/{collection_id}", collection_id=collection_id),
                 params={"language": language},

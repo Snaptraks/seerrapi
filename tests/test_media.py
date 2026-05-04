@@ -6,14 +6,21 @@ import pytest_asyncio
 from seerrapi.base import MediaType
 from seerrapi.client import SeerrClient
 from seerrapi.media import Media, WatchData
+from seerrapi.request import MediaStatus
 
 from . import assert_list_of_instances
 
 
 @pytest_asyncio.fixture
 async def media(seerr_client: SeerrClient) -> AsyncGenerator[Media]:
-    medias = await seerr_client.media.get(take=20)
-    media = next(m for m in medias if m.media_type == MediaType.TV)
+    medias = await seerr_client.media.get(take=20, filter_="partial")
+    media = next(
+        m
+        for m in medias
+        if (
+            m.media_type == MediaType.TV and m.status == MediaStatus.PARTIALLY_AVAILABLE
+        )
+    )
 
     yield media
 

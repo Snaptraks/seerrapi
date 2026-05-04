@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from pydantic import Field
+
 from .base import Base, Endpoints, Stateful
 from .http import APIPath
 from .request import Season, _MediaInfoBase
@@ -33,10 +35,10 @@ if TYPE_CHECKING:
 
 
 class WatchData(Base):
-    users: list[User]
-    play_count: int
-    play_count_7_days: int
-    play_count_30_days: int
+    users: list[User] = Field(default_factory=list)
+    play_count: int = 0
+    play_count_7_days: int = 0
+    play_count_30_days: int = 0
 
 
 class Media(_MediaInfoBase, Stateful):
@@ -56,12 +58,15 @@ class Media(_MediaInfoBase, Stateful):
 
         return Media.from_data(resp)
 
-    async def watch_data(self) -> ...:
+    async def watch_data(self) -> WatchData:
         resp = await self.http.request(
             "GET", APIPath("/media/{media_id}/watch_data", media_id=self.id)
         )
 
-        return WatchData.from_data(resp["data"])
+        try:
+            return WatchData.from_data(resp["data"])
+        except KeyError:
+            return WatchData()
 
 
 class MediaEndpoints(Endpoints):

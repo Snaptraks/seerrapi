@@ -23,6 +23,7 @@ from .base import (
 )
 from .http import APIPath
 from .request import _MediaInfoBase
+from .utils import DateOrEmptyStr
 
 
 class ContentRatings(Base):
@@ -71,7 +72,7 @@ class TVMediaInfo(_MediaInfoBase):
 class _TVBase(Base, Stateful):
     id: int
     backdrop_path: str | None
-    first_air_date: date
+    first_air_date: DateOrEmptyStr
     name: str
     origin_country: list[str]
     original_language: str

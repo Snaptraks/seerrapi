@@ -10,6 +10,7 @@ from .http import HTTP, APIPath
 from .issue import IssueEndpoints
 from .media import MediaEndpoints
 from .movies import MovieEndpoints
+from .other import OtherEndpoints
 from .overriderule import OverrideRuleEndpoints
 from .person import PersonEndpoints
 from .public import StatusEndpoints
@@ -49,6 +50,7 @@ class SeerrClient:
         self.media = MediaEndpoints()
         self.overriderule = OverrideRuleEndpoints()
         self.issue = IssueEndpoints()
+        self.other = OtherEndpoints()
 
         client_context.set(self)
         http_context.set(self.http)

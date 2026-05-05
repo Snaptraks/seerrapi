@@ -31,3 +31,10 @@ class SeerrNotFoundError(SeerrError):
 
 class SeerrIssueNotFoundError(SeerrNotFoundError):
     """Error raised when the requested issue does not exist."""
+
+
+class TMDBKeywordNotFoundError(SeerrNotFoundError):
+    """Error raised when searching for a keyword that does not exist in TMDB."""
+
+    def __init__(self, keyword_id: int) -> None:
+        super().__init__(f"Keyword with ID {keyword_id} not found.")

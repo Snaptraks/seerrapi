@@ -7,7 +7,7 @@ from urllib.parse import quote as _uriquote
 
 import httpx
 
-from .errors import SeerrAuthenticationError, SeerrConnectionError
+from .errors import SeerrAuthenticationError, SeerrConnectionError, SeerrNotFoundError
 from .utils import to_camel_case_dict
 
 if TYPE_CHECKING:
@@ -99,6 +99,9 @@ class HTTP:
         if resp.status_code == 403:  # noqa: PLR2004
             msg = "Client is not authenticated"
             raise SeerrAuthenticationError(msg)
+
+        if resp.status_code == 404:  # noqa: PLR2004
+            raise SeerrNotFoundError(resp.json()["message"])
 
         if resp.status_code >= 400:  # noqa: PLR2004
             content_type = resp.headers.get("Content-Type", "")

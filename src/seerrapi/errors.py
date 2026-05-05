@@ -1,8 +1,16 @@
+from typing import Any
+
+
 class SeerrError(Exception):
     """Base error class for SeerrAPI.
 
     This can be used to catch all the errors raised from this library.
     """
+
+    def __init__(self, msg: str, extras: dict[str, Any] | None = None) -> None:
+        self.msg = msg
+        self.extras = extras or {}
+        super().__init__(msg)
 
 
 class SeerrConnectionError(SeerrError):
@@ -15,3 +23,11 @@ class SeerrAuthenticationError(SeerrError):
 
 class SeerrSearchError(SeerrError):
     """Error raised when invalid parameters are passed to discover search."""
+
+
+class SeerrNotFoundError(SeerrError):
+    """Error raised when the API returns a 404 HTTP code."""
+
+
+class SeerrIssueNotFoundError(SeerrNotFoundError):
+    """Error raised when the requested issue does not exist."""

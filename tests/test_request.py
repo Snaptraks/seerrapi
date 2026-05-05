@@ -44,7 +44,7 @@ async def test_client_get_requests_count(seerr_client: SeerrClient) -> None:
 
 @pytest.mark.asyncio
 async def test_client_get_request_by_id(seerr_client: SeerrClient) -> None:
-    request = await seerr_client.request.get(1)
+    request = await seerr_client.request.get(167)
     assert isinstance(request, Request)
 
 
